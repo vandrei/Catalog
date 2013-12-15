@@ -33,6 +33,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.Border;
+import liceu.Utilizator;
 
 /**
  *
@@ -46,6 +47,7 @@ public class LogInView extends MainView implements ActionListener{
     private JLabel passwordLabel;
     private BufferedImage blackboard;
     private JLabel professorLabel;
+    Utilizator user;
     
     @Override
     public void actionPerformed(ActionEvent ae)
@@ -60,9 +62,10 @@ public class LogInView extends MainView implements ActionListener{
         } 
     }
     
-    public LogInView()
+    public LogInView(Utilizator user)
     {
         super();
+        this.user = user;
         try
         {
            
@@ -113,9 +116,7 @@ public class LogInView extends MainView implements ActionListener{
             JButton logInButton = new JButton(new ImageIcon(arrowImage));
             logInButton.setBounds(professorLabel.getBounds().x - arrowImage.getWidth() + 10, 
                     passwordTextField.getBounds().y + passwordTextField.getBounds().height, arrowImage.getWidth(), arrowImage.getHeight());
-            logInButton.setBackground(new Color(0,0,25,255));
             logInButton.setOpaque(false);
-            logInButton.setForeground(new Color(0,0,25,255));
             logInButton.setContentAreaFilled(false);
             logInButton.setBorderPainted(false);
             
