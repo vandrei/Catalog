@@ -96,6 +96,14 @@ public class HomeView extends MainView {
             
             layers.add(signOut, new Integer(2));
             
+            BufferedImage infoImage = ImageIO.read(new File("img/infogreen.png"));
+            JButton info = new JButton(new ImageIcon(infoImage));
+            info.setBounds(108, 430, infoImage.getWidth(), infoImage.getHeight());
+            info.setOpaque(false);
+            info.setContentAreaFilled(false);
+            info.setBorderPainted(false);
+            
+            layers.add(info, new Integer(2));
             
         
         add(layers);
