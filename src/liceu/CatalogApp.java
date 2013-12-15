@@ -4,6 +4,9 @@
  */
 package liceu;
 
+import graphicUI.LogInView;
+import graphicUI.MainView;
+
 /**
  *
  * @author andrei
@@ -14,6 +17,6 @@ public class CatalogApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        LogInView view = new LogInView();
     }
 }
