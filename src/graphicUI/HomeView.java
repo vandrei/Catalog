@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JTextArea;
 import liceu.Administrator;
 import liceu.Elev;
 import liceu.Profesor;
@@ -57,7 +58,7 @@ public class HomeView extends MainView {
         {
             BufferedImage gradesImage = ImageIO.read(new File("img/reportcard.png"));
             JButton viewGrades = new JButton(new ImageIcon(gradesImage));
-            viewGrades.setBounds(300, 500, gradesImage.getWidth(), gradesImage.getHeight());
+            viewGrades.setBounds(280, 500, gradesImage.getWidth(), gradesImage.getHeight());
             viewGrades.setOpaque(false);
             viewGrades.setContentAreaFilled(false);
             viewGrades.setBorderPainted(false);
@@ -66,7 +67,7 @@ public class HomeView extends MainView {
             
             BufferedImage skipsImage = ImageIO.read(new File("img/absente2.png"));
             JButton viewSkips = new JButton(new ImageIcon(skipsImage));
-            viewSkips.setBounds(610, 500, skipsImage.getWidth(), skipsImage.getHeight());
+            viewSkips.setBounds(630, 500, skipsImage.getWidth(), skipsImage.getHeight());
             viewSkips.setOpaque(false);
             viewSkips.setContentAreaFilled(false);
             viewSkips.setBorderPainted(false);
@@ -81,6 +82,7 @@ public class HomeView extends MainView {
             JLabel welcomeText = new JLabel("Bine ai revenit, " + "Costel");//user.getFirstName());
             welcomeText.setFont(new Font("SweetlyBroken", Font.PLAIN, 39));
             welcomeText.setForeground(Color.white);
+
             welcomeText.setBounds(blackboard.getBounds().x + 30, blackboard.getBounds().y + 30, 340, 40);
             
             layers.add(welcomeText, new Integer(3));
