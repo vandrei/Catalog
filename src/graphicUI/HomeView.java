@@ -6,15 +6,19 @@ package graphicUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextArea;
 import liceu.Administrator;
+import liceu.Centralizator;
 import liceu.Elev;
 import liceu.Profesor;
 import liceu.Secretar;
@@ -32,9 +36,9 @@ public class HomeView extends MainView {
     {
         super();
         this.user = user;
-        homeforElev();
+       // homeforElev();
         
-    /*    if (user instanceof Elev)
+        if (user instanceof Elev)
         {
             homeforElev();
         }
@@ -49,7 +53,7 @@ public class HomeView extends MainView {
         else if (user instanceof Administrator)
         {
             homeForAdmin();
-        }*/
+        }
     }
 
     private void homeforElev() {
@@ -62,6 +66,13 @@ public class HomeView extends MainView {
             viewGrades.setOpaque(false);
             viewGrades.setContentAreaFilled(false);
             viewGrades.setBorderPainted(false);
+            viewGrades.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    new CatalogView();
+                }
+            });
             
             layers.add(viewGrades, new Integer(2));
             
@@ -79,7 +90,7 @@ public class HomeView extends MainView {
             
             layers.add(blackboard, new Integer(2));
             
-            JLabel welcomeText = new JLabel("Bine ai revenit, " + "Costel");//user.getFirstName());
+            JLabel welcomeText = new JLabel("Bine ai revenit, " + user.getFirstName());
             welcomeText.setFont(new Font("SweetlyBroken", Font.PLAIN, 39));
             welcomeText.setForeground(Color.white);
 
@@ -93,12 +104,18 @@ public class HomeView extends MainView {
             signOut.setOpaque(false);
             signOut.setContentAreaFilled(false);
             signOut.setBorderPainted(false);
+            signOut.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    Centralizator.getCentralizator().signOutUser();
+                }
+            });
             
             layers.add(signOut, new Integer(2));
             
             BufferedImage infoImage = ImageIO.read(new File("img/infogreen.png"));
             JButton info = new JButton(new ImageIcon(infoImage));
-            info.setBounds(108, 430, infoImage.getWidth(), infoImage.getHeight());
+            info.setBounds(520, 500, infoImage.getWidth(), infoImage.getHeight());
             info.setOpaque(false);
             info.setContentAreaFilled(false);
             info.setBorderPainted(false);

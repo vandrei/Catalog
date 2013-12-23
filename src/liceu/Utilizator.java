@@ -19,10 +19,22 @@ public abstract class Utilizator {
         this.prenume = prenume;
     }
     
+    public boolean passwordIsCorrect(String password)
+    {
+        if (this.password.equals(password))
+            return true;
+        return false;
+    }
+    
     @Override
     public String toString()
     {
         return nume + " " + prenume;
+    }
+    
+    public String getFirstName()
+    {
+        return prenume;
     }
     
 }
