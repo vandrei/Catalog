@@ -8,7 +8,7 @@ package liceu;
  *
  * @author andrei
  */
-class Materie {
+public class Materie {
     private String name;
     private int nrOre;
     private boolean teza;

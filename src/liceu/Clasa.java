@@ -5,6 +5,7 @@
 package liceu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -14,6 +15,7 @@ public class Clasa {
     private int classID;
     private ArrayList<Elev> elevi;
     private ArrayList<Materie> materii;
+    private HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>> Catalog;
     
     public Clasa(int classID, ArrayList<Elev> elevi, ArrayList<Materie> materii)
     {
@@ -30,6 +32,11 @@ public class Clasa {
     public boolean delElev(Elev elev)
     {
         return true;
+    }
+    
+    public HashMap<Materie, ? extends SituatieMaterieBaza> getSituatieElev(Elev elev)
+    {
+        return Catalog.get(elev);
     }
     
 }

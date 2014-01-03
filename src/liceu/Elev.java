@@ -4,18 +4,28 @@
  */
 package liceu;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 /**
  *
  * @author andrei
  */
 public class Elev extends Utilizator implements IElev{
     private String CNP, dataNastere;
+    private String classID;
     
     public Elev (String userName, String password, String nume, String prenume, String CNP, String dataNastere)
     {
         super(userName, password, nume, prenume);
         this.CNP = CNP;
         this.dataNastere = dataNastere;
+    }
+
+    @Override
+    public HashMap<Materie, ? extends SituatieMaterieBaza> getSituatie() {
+        return null;
+        
     }
     
     

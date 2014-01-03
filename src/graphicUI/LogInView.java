@@ -244,6 +244,7 @@ public class LogInView extends MainView implements ActionListener{
                 if (layers.getLocation().y <= 9)
                 {
                     upTimer.stop();
+                    setVisible(false);
                     new HomeView(user);
                 }
             }

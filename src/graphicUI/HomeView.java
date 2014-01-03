@@ -70,7 +70,8 @@ public class HomeView extends MainView {
 
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    new CatalogView();
+                    setVisible(false);
+                    new GradesView(user);
                 }
             });
             
