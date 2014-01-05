@@ -10,9 +10,9 @@ package liceu;
  */
 public class SituatieMaterieCuTeza extends SituatieMaterieBaza {
     
-        public String getTeza(int i) {
+    public String getTeza(int i) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     
 }

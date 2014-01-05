@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import liceu.Centralizator;
+import liceu.Elev;
 import liceu.Materie;
 import liceu.SituatieMaterieBaza;
 import liceu.SituatieMaterieCuTeza;
@@ -20,13 +22,15 @@ import liceu.Utilizator;
  * @author andrei
  */
 public class GradesView extends CatalogView {
-    private Utilizator user;
-    HashMap <Materie, ? extends SituatieMaterieBaza> situatieElev;
+    private HashMap <Materie, ? extends SituatieMaterieBaza> situatieElev;
+    private Utilizator user = null;
     
-    public GradesView(Utilizator user)
+    
+    public GradesView(Elev elev)
     {
         super();
-        this.user = user;
+        this.user = elev;
+        situatieElev = elev.getSituatie();
         int nr_materii = situatieElev.size();
         Set<Materie> materii = null;
         materii = situatieElev.keySet();
@@ -63,7 +67,7 @@ public class GradesView extends CatalogView {
                 layers.add(teza, new Integer(2));
             }
             
-            heightNew += 15 + 40;
+            heightNew += 55;
             
         }
         add(layers);

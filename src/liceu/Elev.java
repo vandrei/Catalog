@@ -22,10 +22,15 @@ public class Elev extends Utilizator implements IElev{
         this.dataNastere = dataNastere;
     }
 
+    public String getClassID()
+    {
+        return classID;
+    }
+
     @Override
     public HashMap<Materie, ? extends SituatieMaterieBaza> getSituatie() {
-        return null;
-        
+        Centralizator centralizator = Centralizator.getCentralizator();
+        return centralizator.getClasa(classID).getSituatieElev(this);
     }
     
     

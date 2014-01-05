@@ -71,5 +71,21 @@ public class SituatieMaterieBaza {
             grades += ", " + i.next().toString();
         }
         return grades;
-    }    
+    }
+    
+    public class Absenta {
+        private String date;
+        private String status;
+        
+        public Absenta(String date)
+        {
+            this.date = date;
+            this.status = "nemotivata";
+        }
+        
+        public String toString()
+        {
+            return null;
+        }
+    }
 }

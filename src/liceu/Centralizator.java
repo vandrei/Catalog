@@ -9,9 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -30,6 +32,15 @@ public class Centralizator implements java.io.Serializable {
         classes = new HashMap<String, Clasa>();
         materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
         users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "12345", "25 martie 1993"));
+        users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
+        classes.put("9A", new Clasa("9A"));
+        classes.put("9B", new Clasa("9B"));
+        classes.put("10A", new Clasa("10A"));
+    }
+    
+    public Set<String> getClassNames()
+    {
+        return classes.keySet();
     }
     
     public Utilizator authenticate(String username, String password)
@@ -44,6 +55,12 @@ public class Centralizator implements java.io.Serializable {
         }
         return null;
     }
+    
+    public Clasa getClasa(String classID)
+    {
+        return classes.get(classID);
+    }
+    
     
     public void signOutUser()
     {
