@@ -17,4 +17,10 @@ public class Profesor extends Utilizator implements IProfesor, java.io.Serializa
         this.materie = materie;
     }
     
+    @Override
+    public String toString()
+    {
+        return super.toString() + " - " + materie;
+    }
+    
 }

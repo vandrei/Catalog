@@ -16,6 +16,8 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +33,19 @@ public class Centralizator implements java.io.Serializable {
     
     protected Centralizator()
     {
+        readFromFile(0, 4);
+        
+                /* users = new HashMap<String, Utilizator>();
+                 classes = new HashMap<String, Clasa>();
+                 materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
+                 profesori = new ArrayList<Profesor>();
+                 users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
+                 users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
+                 classes.put("9A", new Clasa("9A"));*/
+    }
+    
+    private void readFromFile(int i, int limit)
+    {
         try
         {
             FileInputStream fileIn = new FileInputStream("data/Centralizator.obj");
@@ -41,28 +56,24 @@ public class Centralizator implements java.io.Serializable {
             profesori = (ArrayList<Profesor>) in.readObject();
             in.close();
             fileIn.close();
-        } catch (IOException i)
+        } catch (Exception e)
         {
-         users = new HashMap<String, Utilizator>();
-        classes = new HashMap<String, Clasa>();
-        materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
-        profesori = new ArrayList<Profesor>();
-        users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
-        users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
-        classes.put("9A", new Clasa("9A"));
-            return;
+            /*if (i >= limit)
+                System.exit(-1);
+            readFromFile(i+1, limit);*/
+            users = new HashMap<String, Utilizator>();
+                 classes = new HashMap<String, Clasa>();
+                 materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
+                 profesori = new ArrayList<Profesor>();
+                 users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
+                 users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
+                 classes.put("9A", new Clasa("9A"));
         }
-         catch (ClassNotFoundException e)
-         {
-             users = new HashMap<String, Utilizator>();
-        classes = new HashMap<String, Clasa>();
-        materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
-        profesori = new ArrayList<Profesor>();
-        users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
-        users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
-        classes.put("9A", new Clasa("9A"));
-            return;
-         }
+    }
+    
+    public Profesor getProfesor(Materie materie, Clasa clasa)
+    {
+        return materii.get(materie).get(clasa);
     }
     
     public void delProfesor (Profesor profesor)
@@ -89,6 +100,11 @@ public class Centralizator implements java.io.Serializable {
             materii.put(materie, new HashMap<Clasa, Profesor>());
         }
         materii.get(materie).put(clasa, profesor);
+    }
+    
+    public void delMaterie(Materie materie, Clasa clasa)
+    {
+        materii.get(materie).remove(clasa);
     }
     
     public void addUtilizator (Utilizator user)

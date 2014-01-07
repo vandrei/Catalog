@@ -32,6 +32,12 @@ public class Clasa implements java.io.Serializable {
         Centralizator.getCentralizator().addMaterie(materie, profesor, this);
     }
     
+    public void delMaterie(Materie materie)
+    {
+        materii.remove(materie);
+        Centralizator.getCentralizator().delMaterie(materie, this);
+    }
+    
     public String getClassID()
     {
         return classID;

@@ -20,4 +20,25 @@ public class Materie implements java.io.Serializable{
         this.teza = teza;
     }
     
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+    
+    public String getnrOre()
+    {
+        return Integer.toString(nrOre);
+    }
+    
+    public boolean getTeza()
+    {
+        return teza;
+    }
+    
+    public Profesor getProfesor(Clasa clasa)
+    {
+        return Centralizator.getCentralizator().getProfesor(this, clasa);
+    }
+    
 }
