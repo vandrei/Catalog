@@ -15,7 +15,6 @@ public class Clasa implements java.io.Serializable {
     private String classID;
     private ArrayList<Elev> elevi;
     private ArrayList<Materie> materii;
-    private HashMap<Materie, Profesor> profesori;
     private HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>> Catalog;
     
     public Clasa(String classID)
@@ -23,7 +22,7 @@ public class Clasa implements java.io.Serializable {
         this.classID = classID;
         elevi = new ArrayList<Elev>();
         materii = new ArrayList<Materie>();
-        profesori = new HashMap<Materie, Profesor>();
+        //profesori = new HashMap<Materie, Profesor>();
         Catalog = new HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>>();
     }
     
@@ -41,6 +40,11 @@ public class Clasa implements java.io.Serializable {
     public void delElev(Elev elev)
     {
         elevi.remove(elev);
+    }
+    
+    public Materie[] getMaterii()
+    {
+        return materii.toArray(new Materie[materii.size()]);
     }
     
     public Elev[] getElevNames()

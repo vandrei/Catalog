@@ -36,13 +36,13 @@ public class Elev extends Utilizator implements IElev{
     {
         super(userName, password, nume, prenume);
         this.CNP = CNP;
-        setDataNastere();
+        //setDataNastere();
     }
     
     public void changeInfo(String username, String nume, String prenume, String CNP)
     {
         this.CNP = CNP;
-        setDataNastere();
+        //setDataNastere();
         String oldUsername = super.getUsername();
         super.changeInfo(username, nume, prenume);
         Centralizator.getCentralizator().changeUsername(oldUsername, this);

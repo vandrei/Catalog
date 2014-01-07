@@ -71,7 +71,7 @@ public class Centralizator implements java.io.Serializable {
         users.remove(oldUsername);
         users.put(user.getUsername(), user);
     }
-    
+     
     public void moveElev(String oldClassID, String newClassID, Elev elev)
     {
         ((Clasa)classes.get(oldClassID)).delElev(elev);

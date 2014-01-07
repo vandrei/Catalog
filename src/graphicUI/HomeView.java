@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -193,8 +194,15 @@ public class HomeView extends MainView {
        
        final JLayeredPane classEditLayer = new JLayeredPane();
        final JList eleviList = new JList();
+       final JList materiiList = new JList();
+       final JComboBox profesoriCombo = new JComboBox();
        eleviList.setBounds(150, 150, 250, 300);
+       materiiList.setBounds(540, 150, 200, 300);
+       profesoriCombo.setBounds(810, 210, 200, 30);
        classEditLayer.add(eleviList, new Integer(2));
+       classEditLayer.add(materiiList, new Integer(2));
+       classEditLayer.add(profesoriCombo, new Integer(2));
+       
        
        JButton addElevButton = new JButton("Adauga");
        JButton removeElevButton = new JButton("Sterge");
@@ -219,7 +227,7 @@ public class HomeView extends MainView {
             }
         });
        
-       makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, this, classEditLayer);
+       makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, this, classEditLayer, materiiList, profesoriCombo);
        
        editElev.addActionListener(new ActionListener() {
 
@@ -336,7 +344,7 @@ public class HomeView extends MainView {
             public void actionPerformed(ActionEvent ae) {
                 ((Secretar) user).addClasa(className.getText());
                 homeViewvar.remove(addClassLayer);
-                makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, homeViewvar, classEditLayer);
+                makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, homeViewvar, classEditLayer, materiiList, profesoriCombo);
                 homeViewvar.repaint();
             }
         });
@@ -360,8 +368,6 @@ public class HomeView extends MainView {
        claseMenu.add(clasa10);
        claseMenu.add(clasa11);
        claseMenu.add(clasa12);
-       
-       
        claseMenu.add(addClasa);
        
        setJMenuBar(menuBar);
@@ -382,6 +388,8 @@ public class HomeView extends MainView {
                    Elev[] elevi = (Elev[]) cl.getElevNames();
                    setSelectedClass(cl);
                    
+                   
+                   
                    eleviList.setListData(elevi);
                    if (classEditLayer.getParent() == null)
                    {
@@ -394,7 +402,8 @@ public class HomeView extends MainView {
         clasax.add(crr_item, clasax.getItemCount() - 1);
     }
     
-    private void makeMenu(JMenu clasa9, JMenu clasa10, JMenu clasa11, JMenu clasa12, final JList eleviList, final HomeView frame, final JLayeredPane classEditLayer)
+    private void makeMenu(JMenu clasa9, JMenu clasa10, JMenu clasa11, JMenu clasa12, final JList eleviList, final HomeView frame, 
+            final JLayeredPane classEditLayer, final JList materiiList, final JComboBox profesoriCombo)
     {
         clasa9.removeAll();
         clasa10.removeAll();
@@ -436,6 +445,19 @@ public class HomeView extends MainView {
                    setSelectedClass(cl);
                    
                    eleviList.setListData(elevi);
+                   materiiList.setListData(selectedClasa.getMaterii());
+                   
+                   JButton showProfsButton = new JButton("Arata profesori");
+                   showProfsButton.setBounds(810, 340, 200, 40);
+                   classEditLayer.add(showProfsButton, new Integer(2));
+                   showProfsButton.addActionListener(new ActionListener() {
+
+                       @Override
+                       public void actionPerformed(ActionEvent ae) {
+                           //profesoriCombo.set
+                       }
+                   });
+                   
                    if (classEditLayer.getParent() == null)
                    {
                        frame.add(classEditLayer);
