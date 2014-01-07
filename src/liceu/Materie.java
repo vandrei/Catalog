@@ -13,4 +13,11 @@ public class Materie implements java.io.Serializable{
     private int nrOre;
     private boolean teza;
     
+    public Materie(String name, int nrOre, boolean teza)
+    {
+        this.name = name;
+        this.nrOre = nrOre;
+        this.teza = teza;
+    }
+    
 }

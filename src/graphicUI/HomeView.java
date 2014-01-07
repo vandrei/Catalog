@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +39,7 @@ import liceu.Administrator;
 import liceu.Centralizator;
 import liceu.Clasa;
 import liceu.Elev;
+import liceu.Materie;
 import liceu.Profesor;
 import liceu.Secretar;
 import liceu.Utilizator;
@@ -177,6 +179,13 @@ public class HomeView extends MainView {
        menuBar.add(claseMenu);
        menuBar.add(profesoriMenu);
        menuBar.add(logOutItem);
+       
+       JMenuItem addProfesor = new JMenuItem("Adauga un profesor");
+       JMenuItem delProfesor = new JMenuItem("Sterge un profesor");
+       
+       profesoriMenu.add(addProfesor);
+       profesoriMenu.add(delProfesor);
+       
        logOutItem.addActionListener(new ActionListener() {
 
             @Override
@@ -203,6 +212,79 @@ public class HomeView extends MainView {
        classEditLayer.add(materiiList, new Integer(2));
        classEditLayer.add(profesoriCombo, new Integer(2));
        
+       final JLayeredPane profesoriLayer = new JLayeredPane();
+       addProfesor.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (classEditLayer.getParent() != null)
+                {
+                    frame.remove(classEditLayer);
+                }
+                       final JTextField username = new JTextField("nume utilizator");
+        username.setBounds(200, 200, 200, 40);
+        profesoriLayer.add(username, new Integer(2));
+                
+        final JTextField nume = new JTextField("Nume");
+        nume.setBounds(200, 245, 200, 40);
+        profesoriLayer.add(nume, new Integer(2));
+        
+        final JTextField prenume = new JTextField("Prenume");
+        prenume.setBounds(200, 290, 200, 40);
+        profesoriLayer.add(prenume, new Integer(2));
+        
+        final JTextField materie = new JTextField("Materia");
+        materie.setBounds(200,335, 200, 40);
+        profesoriLayer.add(materie, new Integer(2));
+        
+        JButton addProfesorButton = new JButton("Adauga profesorul");
+        addProfesorButton.setBounds(200, 380, 200, 40);
+        profesoriLayer.add(addProfesorButton, new Integer(2));
+        addProfesorButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Centralizator.getCentralizator().addProfesor(new Profesor(username.getText(), "1234", nume.getText(), prenume.getText(), materie.getText()));
+                if (profesoriLayer.getParent() != null)
+                {
+                    frame.remove(profesoriLayer);
+                }
+                frame.repaint();
+            }
+        });
+
+                frame.add(profesoriLayer);
+                frame.pack();
+                frame.repaint();
+            }
+        });
+       
+       delProfesor.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JList profesoriList = new JList(Centralizator.getCentralizator().getProfesori());
+                profesoriList.setBounds(350, 200, 250, 400);
+                profesoriLayer.add(profesoriList, new Integer(2));
+                
+                JButton delProfesorButton = new JButton("Sterge profesori");
+                delProfesorButton.setBounds(350, 820, 250, 30);
+                delProfesorButton.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        Object[] toBeDel = profesoriList.getSelectedValues();
+                        for (int i = 0; i < toBeDel.length; i++)
+                        {
+                            selectedClasa.delElev((Elev) toBeDel[i]);
+                        }
+                        eleviList.setListData(selectedClasa.getElevNames());
+                        Centralizator.getCentralizator();
+                    }
+                });
+
+            }
+        });
        
        JButton addElevButton = new JButton("Adauga");
        JButton removeElevButton = new JButton("Sterge");
@@ -447,14 +529,42 @@ public class HomeView extends MainView {
                    eleviList.setListData(elevi);
                    materiiList.setListData(selectedClasa.getMaterii());
                    
-                   JButton showProfsButton = new JButton("Arata profesori");
-                   showProfsButton.setBounds(810, 340, 200, 40);
-                   classEditLayer.add(showProfsButton, new Integer(2));
-                   showProfsButton.addActionListener(new ActionListener() {
+                   JButton addMaterie = new JButton("Adauga materie");
+                   addMaterie.setBounds(540, 470, 200, 40);
+                   classEditLayer.add(addMaterie, new Integer(2));
+                   addMaterie.addActionListener(new ActionListener() {
 
                        @Override
                        public void actionPerformed(ActionEvent ae) {
-                           //profesoriCombo.set
+                           final JTextField materieName = new JTextField("Nume materie");
+                           materieName.setBounds(540, 520, 200, 40);
+                           classEditLayer.add(materieName, new Integer(2));
+                           
+                           final JTextField nrOre = new JTextField("Nr ore/saptamana");
+                           nrOre.setBounds(540, 570, 200, 40);
+                           classEditLayer.add(nrOre, new Integer(2));
+                           
+                           final JCheckBox teza = new JCheckBox("Teza");
+                           teza.setBounds(540, 620, 200, 40);
+                           classEditLayer.add(teza, new Integer(2));
+                           
+                           
+                           JButton executeAdd = new JButton ("Adauga materia");
+                           executeAdd.setBounds(540, 670, 200, 40);
+                           classEditLayer.add(executeAdd, new Integer(2));
+                           
+                           final JComboBox profesor = new JComboBox(Centralizator.getCentralizator().getProfesori());
+                           profesor.setBounds(780, 590, 200, 40);
+                           classEditLayer.add(profesor, new Integer(2));
+                           
+                           executeAdd.addActionListener(new ActionListener() {
+
+                               @Override
+                               public void actionPerformed(ActionEvent ae) {
+                                   selectedClasa.addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()), 
+                                           teza.isSelected()), (Profesor) profesor.getSelectedItem());
+                               }
+                           });
                        }
                    });
                    

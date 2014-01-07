@@ -26,6 +26,12 @@ public class Clasa implements java.io.Serializable {
         Catalog = new HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>>();
     }
     
+    public void addMaterie(Materie materie, Profesor profesor)
+    {
+        materii.add(materie);
+        Centralizator.getCentralizator().addMaterie(materie, profesor, this);
+    }
+    
     public String getClassID()
     {
         return classID;
