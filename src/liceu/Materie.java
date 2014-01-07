@@ -8,7 +8,7 @@ package liceu;
  *
  * @author andrei
  */
-public class Materie {
+public class Materie implements java.io.Serializable{
     private String name;
     private int nrOre;
     private boolean teza;

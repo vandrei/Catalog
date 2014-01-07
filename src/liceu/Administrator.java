@@ -13,5 +13,10 @@ public class Administrator extends Utilizator implements IProfesor, ISecretar {
     {
         super(userName, password, nume, prenume);
     }
+
+    @Override
+    public void addClasa(String classID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

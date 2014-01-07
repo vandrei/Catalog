@@ -4,6 +4,7 @@
  */
 package graphicUI;
 
+import com.sun.tools.internal.xjc.api.ClassNameAllocator;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.MenuItem;
@@ -29,6 +30,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import liceu.Administrator;
 import liceu.Centralizator;
 import liceu.Clasa;
@@ -50,7 +54,6 @@ public class HomeView extends MainView {
     {
         super();
         this.user = user;
-       // homeforElev();
         
         if (user instanceof Elev)
         {
@@ -122,6 +125,7 @@ public class HomeView extends MainView {
             signOut.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
+                    setVisible(false);
                     Centralizator.getCentralizator().signOutUser();
                 }
             });
@@ -152,22 +156,14 @@ public class HomeView extends MainView {
     {
         selectedClasa = cls;
     }
-    
-    public Clasa getSelectedClass()
-    {
-        return selectedClasa;
-    }
+
 
     private void homeForProfesor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
+   
 
     private void homeForSecretar() {
-       // layers = new JLayeredPane();
-        
-       /* JButton b = new JButton("sadcas");
-        b.setBounds(50,50,50,50);
-        layers.add(b);*/
         final JFrame frame = this;
         final HomeView homeViewvar = this;
         
@@ -176,26 +172,39 @@ public class HomeView extends MainView {
        JMenuBar menuBar = new JMenuBar();
        JMenu claseMenu = new JMenu("Clase");
        JMenu profesoriMenu = new JMenu("Profesori");
+       JMenuItem logOutItem = new JMenuItem("Deconectare");
        menuBar.add(claseMenu);
        menuBar.add(profesoriMenu);
+       menuBar.add(logOutItem);
+       logOutItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                setVisible(false);
+                Centralizator.getCentralizator().signOutUser();
+            }
+        });
        
        
-       JMenu clasa9 = new JMenu("Clasa a IX-a");
-       JMenu clasa10 = new JMenu("Clasa a X-a");
-       JMenu clasa11 = new JMenu("Clasa a XI-a");
-       JMenu clasa12 = new JMenu("Clasa a XII-a");
+       final JMenu clasa9 = new JMenu("Clasa a IX-a");
+       final JMenu clasa10 = new JMenu("Clasa a X-a");
+       final JMenu clasa11 = new JMenu("Clasa a XI-a");
+       final JMenu clasa12 = new JMenu("Clasa a XII-a");
        
        final JLayeredPane classEditLayer = new JLayeredPane();
        final JList eleviList = new JList();
-       eleviList.setBounds(150, 150, 200, 300);
+       eleviList.setBounds(150, 150, 250, 300);
        classEditLayer.add(eleviList, new Integer(2));
        
-       JButton addElevButton = new JButton("Adauga Elev");
-       JButton removeElevButton = new JButton("Sterge Elev");
-       addElevButton.setBounds(150, 470, 90, 40);
-       removeElevButton.setBounds(260, 470, 90, 40);
+       JButton addElevButton = new JButton("Adauga");
+       JButton removeElevButton = new JButton("Sterge");
+       JButton editElev = new JButton("Modifica");
+       addElevButton.setBounds(150, 470, 80, 40);
+       removeElevButton.setBounds(235, 470, 80, 40);
+       editElev.setBounds(320, 470, 80, 40);
        classEditLayer.add(addElevButton, new Integer(2));
        classEditLayer.add(removeElevButton, new Integer(2));
+       classEditLayer.add(editElev, new Integer(2));
        
        removeElevButton.addActionListener(new ActionListener() {
 
@@ -210,7 +219,189 @@ public class HomeView extends MainView {
             }
         });
        
-       Set<String> classNames = centralizator.getClassNames();
+       makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, this, classEditLayer);
+       
+       editElev.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                final Elev selectedElev = (Elev) eleviList.getSelectedValue();
+                
+                final JTextField username = new JTextField(selectedElev.getUsername());
+                username.setBounds(150, 530, 250, 30);
+                
+                final JTextField name = new JTextField(selectedElev.getLastName());
+                name.setBounds(150, 570, 80, 30);
+                
+                final JTextField prenume = new JTextField(selectedElev.getFirstName());
+                prenume.setBounds(235, 570, 80, 30);
+                
+                final JTextField clasa = new JTextField(selectedElev.getClassID());
+                clasa.setBounds(150,610, 100, 30);
+                
+                final JTextField cnp = new JTextField(selectedElev.getCNP());
+                cnp.setBounds(320, 570, 80, 30);
+                
+                final JButton addB = new JButton("Modifica!");
+                addB.setBounds(150, 650, 250, 30);
+                
+                addB.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        selectedElev.changeInfo(username.getText(), name.getText(), prenume.getText(), cnp.getText());
+                        selectedElev.changeClasa(clasa.getText());
+                        eleviList.setListData(selectedClasa.getElevNames());
+                        classEditLayer.remove(username);
+                        classEditLayer.remove(name);
+                        classEditLayer.remove(prenume);
+                        classEditLayer.remove(cnp);
+                        classEditLayer.remove(clasa);
+                        classEditLayer.remove(addB);
+                        frame.repaint();
+                    }
+                });
+                
+                classEditLayer.add(username, new Integer(2));
+                classEditLayer.add(name, new Integer(2));
+                classEditLayer.add(prenume, new Integer(2));
+                classEditLayer.add(cnp, new Integer(2));
+                classEditLayer.add(addB, new Integer(2));
+                classEditLayer.add(clasa, new Integer(2));
+                frame.repaint();
+            }
+        });
+       
+       addElevButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                final JTextField username = new JTextField();
+                username.setBounds(150, 530, 250, 30);
+                username.setText("utilizator");
+                
+                final JTextField name = new JTextField("Nume");
+                name.setBounds(150, 570, 80, 30);
+                
+                final JTextField prenume = new JTextField("Prenume");
+                prenume.setBounds(235, 570, 80, 30);
+                
+                final JTextField cnp = new JTextField("CNP");
+                cnp.setBounds(320, 570, 80, 30);
+                
+                final JButton addB = new JButton("Adauga");
+                addB.setBounds(150, 610, 250, 30);
+                
+                addB.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        Elev elevN = new Elev(username.getText(), "1234", name.getText(), prenume.getText(), cnp.getText());
+                        elevN.setClasa(selectedClasa.getClassID());
+                        selectedClasa.addElev(elevN);
+                        
+                        eleviList.setListData(selectedClasa.getElevNames());
+                        classEditLayer.remove(username);
+                        classEditLayer.remove(name);
+                        classEditLayer.remove(prenume);
+                        classEditLayer.remove(cnp);
+                        classEditLayer.remove(addB);
+                        frame.repaint();
+                    }
+                });
+                
+                classEditLayer.add(username, new Integer(2));
+                classEditLayer.add(name, new Integer(2));
+                classEditLayer.add(prenume, new Integer(2));
+                classEditLayer.add(cnp, new Integer(2));
+                classEditLayer.add(addB, new Integer(2));
+                frame.repaint();
+                
+            }
+        });
+       
+       
+       
+       JMenuItem addClasa = new JMenuItem("Adauga o clasa");
+       final JLayeredPane addClassLayer = new JLayeredPane();
+       final JTextField className = new JTextField();
+       className.setBounds(250, 250, 150, 30);
+       addClassLayer.add(className, new Integer(2));
+       
+       JButton addClasaButton = new JButton("Adauga clasa");
+       addClasaButton.setBounds(250, 290, 150, 30);
+       addClasaButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                ((Secretar) user).addClasa(className.getText());
+                homeViewvar.remove(addClassLayer);
+                makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, homeViewvar, classEditLayer);
+                homeViewvar.repaint();
+            }
+        });
+       addClassLayer.add(addClasaButton, new Integer(2));
+       
+       addClasa.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (classEditLayer.getParent() != null)
+                {
+                    homeViewvar.remove(classEditLayer);
+                }
+                homeViewvar.add(addClassLayer);
+                pack();
+                homeViewvar.repaint();
+            }
+        });
+       
+       claseMenu.add(clasa9);
+       claseMenu.add(clasa10);
+       claseMenu.add(clasa11);
+       claseMenu.add(clasa12);
+       
+       
+       claseMenu.add(addClasa);
+       
+       setJMenuBar(menuBar);
+       // add(layers);
+       pack();
+       setVisible(true);
+    }
+    
+    private void addClassToMenu(String classID, JMenu clasax, final JList eleviList, final JLayeredPane classEditLayer, final JFrame frame)
+    {
+        JMenuItem crr_item = new JMenuItem(classID);
+        crr_item.addActionListener(new ActionListener() {
+
+               @Override
+               public void actionPerformed(ActionEvent ae) {
+                   Centralizator c = Centralizator.getCentralizator();
+                   Clasa cl = c.getClasa(ae.getActionCommand());
+                   Elev[] elevi = (Elev[]) cl.getElevNames();
+                   setSelectedClass(cl);
+                   
+                   eleviList.setListData(elevi);
+                   if (classEditLayer.getParent() == null)
+                   {
+                       frame.add(classEditLayer);
+                       frame.repaint();
+                       pack();
+                   }
+               }
+           });
+        clasax.add(crr_item, clasax.getItemCount() - 1);
+    }
+    
+    private void makeMenu(JMenu clasa9, JMenu clasa10, JMenu clasa11, JMenu clasa12, final JList eleviList, final HomeView frame, final JLayeredPane classEditLayer)
+    {
+        clasa9.removeAll();
+        clasa10.removeAll();
+        clasa11.removeAll();
+        clasa12.removeAll();
+        Centralizator centralizator = Centralizator.getCentralizator();
+        Set<String> classNames = centralizator.getClassNames();
        Iterator classIterator = classNames.iterator();
        
        while (classIterator.hasNext())
@@ -242,7 +433,7 @@ public class HomeView extends MainView {
                    Centralizator c = Centralizator.getCentralizator();
                    Clasa cl = c.getClasa(ae.getActionCommand());
                    Elev[] elevi = (Elev[]) cl.getElevNames();
-                   homeViewvar.setSelectedClass(cl);
+                   setSelectedClass(cl);
                    
                    eleviList.setListData(elevi);
                    if (classEditLayer.getParent() == null)
@@ -254,16 +445,6 @@ public class HomeView extends MainView {
                }
            });
        }
-       
-       claseMenu.add(clasa9);
-       claseMenu.add(clasa10);
-       claseMenu.add(clasa11);
-       claseMenu.add(clasa12);
-       
-       setJMenuBar(menuBar);
-       // add(layers);
-       pack();
-       setVisible(true);
     }
 
     private void homeForAdmin() {

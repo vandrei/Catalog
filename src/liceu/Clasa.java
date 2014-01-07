@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author andrei
  */
-public class Clasa {
+public class Clasa implements java.io.Serializable {
     private String classID;
     private ArrayList<Elev> elevi;
     private ArrayList<Materie> materii;
@@ -25,13 +25,6 @@ public class Clasa {
         materii = new ArrayList<Materie>();
         profesori = new HashMap<Materie, Profesor>();
         Catalog = new HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>>();
-        elevi.add(new Elev("andrei", "1234", "Vasilescu", "Andrei", "8765", "25.03.1993"));
-        elevi.add(new Elev("costel", "1234", "Gigelino", "Andrei", "8765", "25.03.1993"));
-        elevi.add(new Elev("bibel", "1234", "Costelino", "Andrei", "8765", "25.03.1993"));
-        if (classID.equals("9B"))
-        {
-            elevi.add(new Elev("gibel", "1234", "Costelino", "Ion", "8765", "25.03.1993"));
-        }
     }
     
     public String getClassID()
@@ -39,9 +32,10 @@ public class Clasa {
         return classID;
     }
     
-    public boolean addElev(Elev elev)
+    public void addElev(Elev elev)
     {
-        return true;
+        elevi.add(elev);
+        Centralizator.getCentralizator().addUtilizator(elev);
     }
     
     public void delElev(Elev elev)

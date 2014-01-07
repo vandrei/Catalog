@@ -171,6 +171,7 @@ public class LogInView extends MainView implements ActionListener{
 
                 @Override
                 public void actionPerformed(ActionEvent ae) {
+                    Centralizator.getCentralizator().saveCentralizator();
                     System.exit(0);
                 }
             });

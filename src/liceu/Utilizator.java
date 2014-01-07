@@ -8,13 +8,30 @@ package liceu;
  *
  * @author andrei
  */
-public abstract class Utilizator {
+public abstract class Utilizator implements java.io.Serializable {
     private String userName, password, nume, prenume;
+    
+    public String getUsername()
+    {
+        return userName;
+    }
+    
+    public String getLastName()
+    {
+        return nume;
+    }
     
     public Utilizator(String userName, String password, String nume, String prenume)
     {
         this.userName = userName;
         this.password = password;
+        this.nume = nume;
+        this.prenume = prenume;
+    }
+    
+    public void changeInfo (String username, String nume, String prenume)
+    {
+        this.userName = username;
         this.nume = nume;
         this.prenume = prenume;
     }

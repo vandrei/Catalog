@@ -8,7 +8,7 @@ package liceu;
  *
  * @author andrei
  */
-public class Profesor extends Utilizator implements IProfesor{
+public class Profesor extends Utilizator implements IProfesor, java.io.Serializable{
     private String materie;
     
     public Profesor(String userName, String password, String nume, String prenume, String materie)

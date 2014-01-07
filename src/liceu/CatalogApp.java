@@ -19,7 +19,8 @@ public class CatalogApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        LogInView view = new LogInView();
+        Centralizator.getCentralizator();
+        new LogInView();
         //HomeView view = new HomeView(null);
         //new CatalogView();
     }

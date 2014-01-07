@@ -13,5 +13,10 @@ public class Secretar extends Utilizator implements ISecretar {
     {
         super(userName, password, nume, prenume);
     }
+
+    @Override
+    public void addClasa(String classID) {
+        Centralizator.getCentralizator().addClasa(classID);
+    }
     
 }
