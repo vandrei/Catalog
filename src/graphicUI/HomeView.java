@@ -45,6 +45,7 @@ import liceu.Elev;
 import liceu.Materie;
 import liceu.Profesor;
 import liceu.Secretar;
+import liceu.SituatieMaterieBaza.Absenta;
 import liceu.Utilizator;
 
 /**
@@ -57,10 +58,12 @@ public class HomeView extends MainView {
     private JLayeredPane layers;
     private Clasa selectedClasa;
     private int semestru;
+    private HomeView hView;
 
     public HomeView(Utilizator user) {
         super();
         this.user = user;
+        this.hView = this;
 
         if (user instanceof Elev) {
             homeforElev();
@@ -76,6 +79,8 @@ public class HomeView extends MainView {
     private void makeClassLayer(final JLayeredPane classLayer, String cName)
     {
         classLayer.removeAll();
+        final JLayeredPane layer2 = new JLayeredPane();
+        final JLayeredPane layer3 = new JLayeredPane();
         final JList eleviList = new JList();
         eleviList.setListData(selectedClasa.getElevNames());
         eleviList.setBounds(100, 100, 150, 250);
@@ -99,12 +104,22 @@ public class HomeView extends MainView {
         ButtonGroup group = new ButtonGroup();
         group.add(sem1);
         group.add(sem2);
+        
+        //super.add(layer2);
 
         
         viewElev.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
+                layer2.removeAll();
+                if (layer2.getParent() != null)
+                {
+                    layer2.getParent().remove(layer2);
+                }
+                
+                if(layer3.getParent() != null)
+                    layer3.getParent().remove(layer3);
                 final JList gradeList = new JList();
                 gradeList.setBounds(300, 100, 50, 250);
                 final Materie m = Centralizator.getCentralizator().getProfsMaterie();
@@ -117,20 +132,82 @@ public class HomeView extends MainView {
                     semestru = 1;
                 }
                 gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
-                classLayer.add(gradeList);
+                layer2.add(gradeList, new Integer(2));
                 
-                JList skipList = new JList();
-                skipList.setBounds(400, 100, 150, 250);
+                final JList skipList = new JList();
+                skipList.setBounds(400, 100, 200, 250);
                 skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
-                classLayer.add(skipList);
+                layer2.add(skipList, new Integer(2));
+                
+                JButton addSkip = new JButton("+");
+                addSkip.setBounds(400, 360, 50, 30);
+                layer2.add(addSkip, new Integer(2));
+                
+                JButton motivateSkip = new JButton("motiveaza");
+                motivateSkip.setBounds(470, 360, 130, 30);
+                layer2.add(motivateSkip, new Integer(2));
                 
                 JButton delGrade = new JButton("x");
                 delGrade.setBounds(300, 360, 24, 24);
-                classLayer.add(delGrade, new Integer(2));
+                layer2.add(delGrade, new Integer(2));
+                
                 
                 JButton addGrade = new JButton("+");
                 addGrade.setBounds(326, 360, 24, 24);
-                classLayer.add(addGrade, new Integer(2));
+                layer2.add(addGrade, new Integer(2));
+                
+                addSkip.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        if (layer3.getParent() != null)
+                        {
+                            layer3.getParent().remove(layer3);
+                        }
+                        layer3.removeAll();
+                        final JTextField dateSkip = new JTextField();
+                        dateSkip.setBounds(400, 410, 150, 30);
+                        layer3.add(dateSkip, new Integer(2));
+                        
+                        JButton confirmSkip = new JButton("Adauga");
+                        confirmSkip.setBounds(400, 450, 150, 30);
+                        
+                        confirmSkip.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                layer3.removeAll();
+                                layer3.getParent().remove(layer3);
+                                selectedClasa.addAbsenta((Elev)eleviList.getSelectedValue(), m, dateSkip.getText(), semestru);
+                                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                                pack();
+                                repaint();
+                            }
+                        });
+                        
+                        layer3.add(confirmSkip, new Integer(2));
+                        add(layer3);
+                        pack();
+                        repaint();
+                    }
+                });
+                
+                motivateSkip.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        if (layer3.getParent() != null)
+                            layer3.getParent().remove(layer3);
+                        Object[] toBeMotivated = skipList.getSelectedValues();
+                        for (int i = 0; i < toBeMotivated.length; i++)
+                        {
+                            ((Absenta) toBeMotivated[i]).motivate();
+                        }
+                        skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                        pack();
+                        repaint();
+                    }
+                });
                 
                 addGrade.addActionListener(new ActionListener() {
 
@@ -160,6 +237,28 @@ public class HomeView extends MainView {
                     }
                 });
                 
+                if (m.getTeza())
+                {
+                    final JTextField tezaLabel = new JTextField(selectedClasa.getTezaatMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                    tezaLabel.setBounds(800, 100, 50, 30);
+                    tezaLabel.setForeground(Color.RED);
+                    layer2.add(tezaLabel, new Integer(2));
+                    
+                    JButton changeTeza = new JButton("Teza");
+                    changeTeza.setBounds(800,140,50,30);
+                    layer2.add(changeTeza, new Integer(2));
+                    
+                    changeTeza.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            selectedClasa.setTezaatMaterie(m, ((Elev)eleviList.getSelectedValue()), semestru, tezaLabel.getText());
+                            tezaLabel.setText(selectedClasa.getTezaatMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                        }
+                    });
+                    
+                }
+                
                 delGrade.addActionListener(new ActionListener() {
 
                     @Override
@@ -172,8 +271,9 @@ public class HomeView extends MainView {
                         gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
                     }
                 });
-                
-                
+                add(layer2);
+                pack();
+                repaint();
             }
         });
         
@@ -267,7 +367,7 @@ public class HomeView extends MainView {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     setVisible(false);
-                    new GradesView((Elev) user);
+                    new GradesView((Elev) user, hView);
                 }
             });
 

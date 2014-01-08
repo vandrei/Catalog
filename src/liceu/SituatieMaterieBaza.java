@@ -132,7 +132,20 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         return null;
     }
     
-    public class Absenta {
+    public void addAbsenta(String date, int semester)
+    {
+        switch(semester)
+        {
+            case 1:
+                absente1.add(new Absenta(date));
+                break;
+            case 2:
+                absente2.add(new Absenta(date));
+                break;
+        }
+    }
+    
+    public class Absenta implements java.io.Serializable {
         private String date;
         private String status;
         
@@ -142,9 +155,14 @@ public class SituatieMaterieBaza implements java.io.Serializable {
             this.status = "nemotivata";
         }
         
+        public void motivate()
+        {
+            this.status = "motivata";
+        }
+        
         public String toString()
         {
-            return null;
+            return date + " - " + status;
         }
     }
 }

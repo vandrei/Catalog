@@ -28,6 +28,12 @@ public class Clasa implements java.io.Serializable {
         Catalog = new HashMap<Elev, HashMap<Materie, ? extends SituatieMaterieBaza>>();
     }
     
+    public void addAbsenta(Elev e, Materie m, String abs, int semester)
+    {
+        Catalog.get(e).get(m).addAbsenta(abs, semester);
+    }
+    
+    
     public String toString()
     {
         return classID;
@@ -133,6 +139,15 @@ public class Clasa implements java.io.Serializable {
     public HashMap<Materie, ? extends SituatieMaterieBaza> getSituatieElev(Elev elev)
     {
         return Catalog.get(elev);
+    }
+    
+    public void setTezaatMaterie(Materie m, Elev elev, int semestru, String grade)
+    {
+        ((SituatieMaterieCuTeza)Catalog.get(elev).get(m)).addTeza(grade, semestru);
+    }
+
+    public String getTezaatMaterie(Materie m, Elev elev, int semestru) {
+        return ((SituatieMaterieCuTeza) Catalog.get(elev).get(m)).getTeza(semestru);
     }
     
 }

@@ -14,11 +14,31 @@ public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.i
     
     public SituatieMaterieCuTeza()
     {
-        
+        super();
+    }
+    
+    public void addTeza(String grade, int semester)
+    {
+        switch(semester)
+        {
+            case 1:
+                teza1 = Integer.parseInt(grade);
+                break;
+            case 2:
+                teza2 = Integer.parseInt(grade);
+                break;
+        }
     }
     
     public String getTeza(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        switch(i)
+        {
+            case 1:
+                return String.valueOf(teza1);
+            case 2:
+                return String.valueOf(teza2);
+        }
+        return null;
     }
     
     
