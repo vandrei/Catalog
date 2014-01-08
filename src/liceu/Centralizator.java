@@ -30,6 +30,7 @@ public class Centralizator implements java.io.Serializable {
     private HashMap<String, Clasa> classes;
     private HashMap<Materie, HashMap<Clasa, Profesor>> materii;
     private ArrayList<Profesor> profesori;
+    private HashMap<String, Materie> materiiNames;
     private static volatile Centralizator centralizator = new Centralizator();
     private Utilizator loggedInUser;
     
@@ -48,6 +49,7 @@ public class Centralizator implements java.io.Serializable {
             classes = (HashMap<String, Clasa>) in.readObject();
             materii = (HashMap<Materie, HashMap<Clasa, Profesor>>) in.readObject();
             profesori = (ArrayList<Profesor>) in.readObject();
+            materiiNames = (HashMap<String, Materie>) in.readObject();
             in.close();
             fileIn.close();
         } catch (Exception e)
@@ -59,10 +61,34 @@ public class Centralizator implements java.io.Serializable {
                  classes = new HashMap<String, Clasa>();
                  materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
                  profesori = new ArrayList<Profesor>();
+                 materiiNames = new HashMap<String, Materie>();
                  users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
                  users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
-                 classes.put("9A", new Clasa("9A"));
+                 //classes.put("9A", new Clasa("9A"));
         }
+    }
+    
+    public Materie getProfsMaterie()
+    {
+        return materiiNames.get(((Profesor)loggedInUser).getMaterie());
+    }
+    
+    public ArrayList<String> getProfsClasses()
+    {
+        HashMap<Clasa, Profesor> map = materii.get(getProfsMaterie());
+        ArrayList<String> clase = new ArrayList<String>();
+        if (map == null)
+            return clase;
+        Iterator<Clasa> it = map.keySet().iterator();
+        while (it.hasNext())
+        {
+            Clasa cls = it.next();
+            if (map.get(cls) == (Profesor)loggedInUser)
+            {
+                clase.add(cls.toString());
+            }
+        }
+        return clase;
     }
     
     public Profesor getProfesor(Materie materie, Clasa clasa)
@@ -85,13 +111,19 @@ public class Centralizator implements java.io.Serializable {
     public void addProfesor(Profesor profesor)
     {
         profesori.add(profesor);
+        users.put(profesor.getUsername(), profesor);
     }
     
     public void addMaterie(Materie materie, Profesor profesor, Clasa clasa)
     {
-        if (! materii.containsKey(materie))
+        if (materiiNames.containsKey(materie.toString()))
+        {
+            materie = materiiNames.get(materie.toString());
+        }
+        else
         {
             materii.put(materie, new HashMap<Clasa, Profesor>());
+            materiiNames.put(materie.toString(), materie);
         }
         materii.get(materie).put(clasa, profesor);
     }
@@ -166,6 +198,7 @@ public class Centralizator implements java.io.Serializable {
             out.writeObject(classes);
             out.writeObject(materii);
             out.writeObject(profesori);
+            out.writeObject(materiiNames);
             out.close();
             fileOut.close();
         }

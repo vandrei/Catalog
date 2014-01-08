@@ -4,6 +4,8 @@
  */
 package liceu;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,14 +13,47 @@ import java.util.List;
  *
  * @author andrei
  */
-public class SituatieMaterieBaza {
+public class SituatieMaterieBaza implements java.io.Serializable {
     
-    private Materie materie;
-    private List<Integer> note1;
-    private List<Integer> note2;
-    private List<Absenta> absente1;
-    private List<Absenta> absente2;
+    private ArrayList<Integer> note1;
+    private ArrayList<Integer> note2;
+    private ArrayList<Absenta> absente1;
+    private ArrayList<Absenta> absente2;
     private float medie1, medie2;
+    
+    public SituatieMaterieBaza()
+    {
+        note1 = new ArrayList<Integer>();
+        note2 = new ArrayList<Integer>();
+        absente1 = new ArrayList<Absenta>();
+        absente2 = new ArrayList<Absenta>();
+    }
+    
+    public void delGrade(int semestru, Integer grade)
+    {
+        switch(semestru)
+        {
+            case 1:
+                note1.remove(grade);
+                break;
+            case 2:
+                note2.remove(grade);
+                break;
+        }
+    }
+    
+    public void addGrade(int semestru, Integer grade)
+    {
+        switch(semestru)
+        {
+            case 1:
+                note1.add(grade);
+                break;
+            case 2:
+                note2.add(grade);
+                break;
+        }
+    }
     
     public float getMean(int semestru)
     {
@@ -71,6 +106,30 @@ public class SituatieMaterieBaza {
             grades += ", " + i.next().toString();
         }
         return grades;
+    }
+    
+    public Integer[] getGradesForProf(int semestru)
+    {
+        switch(semestru)
+        {
+            case 1:
+                return (Integer[]) note1.toArray(new Integer[note1.size()]);
+            case 2:
+                return (Integer[]) note2.toArray(new Integer[note2.size()]);
+        }
+        return null;
+    }
+    
+    public Absenta[] getAbsenteForProf(int semestru)
+    {
+        switch (semestru)
+        {
+            case 1:
+                return absente1.toArray(new Absenta[absente1.size()]);
+            case 2:
+                return absente2.toArray(new Absenta[absente2.size()]);
+        }
+        return null;
     }
     
     public class Absenta {

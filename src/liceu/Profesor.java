@@ -23,4 +23,9 @@ public class Profesor extends Utilizator implements IProfesor, java.io.Serializa
         return super.toString() + " - " + materie;
     }
     
+    public String getMaterie()
+    {
+        return materie;
+    }
+    
 }
