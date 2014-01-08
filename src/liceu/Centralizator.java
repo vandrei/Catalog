@@ -12,8 +12,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -34,14 +36,6 @@ public class Centralizator implements java.io.Serializable {
     protected Centralizator()
     {
         readFromFile(0, 4);
-        
-                /* users = new HashMap<String, Utilizator>();
-                 classes = new HashMap<String, Clasa>();
-                 materii = new HashMap<Materie, HashMap<Clasa, Profesor>>();
-                 profesori = new ArrayList<Profesor>();
-                 users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
-                 users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
-                 classes.put("9A", new Clasa("9A"));*/
     }
     
     private void readFromFile(int i, int limit)
