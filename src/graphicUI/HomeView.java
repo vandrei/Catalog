@@ -1426,6 +1426,81 @@ public class HomeView extends MainView {
     }
 
     private void homeForAdmin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final JList userList = new JList();
+        layers = new JLayeredPane();
+        Object[] users = Centralizator.getCentralizator().getUsers();
+        userList.setListData(users);
+        userList.setBounds(300, 150, 300, 400);
+        layers.add(userList, new Integer(2));
+        
+        JButton signOutButton = new JButton("Iesire");
+        signOutButton.setBounds(970, 50, 40, 20);
+        layers.add(signOutButton, new Integer(2));
+        signOutButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                setVisible(false);
+                Centralizator.getCentralizator().signOutUser();
+            }
+        });
+        
+        final JTextField userNameField = new JTextField("utilizator");
+        userNameField.setBounds(700, 150, 200, 30);
+        layers.add(userNameField, new Integer(2));
+        
+        final JTextField numeField = new JTextField("nume");
+        numeField.setBounds(700, 220, 200, 30);
+        layers.add(numeField, new Integer(2));
+        
+        final JTextField prenumeField = new JTextField("prenume");
+        prenumeField.setBounds(700, 255, 200, 30);
+        layers.add(prenumeField, new Integer(2));
+        
+        final JComboBox userType = new JComboBox();
+        userType.addItem("Secretar");
+        userType.addItem("Administrator");
+        userType.setBounds(700, 185, 200, 30);
+        layers.add(userType, new Integer(2));
+        
+        JButton addUserButton = new JButton("Adauga utilizator");
+        addUserButton.setBounds(700, 290, 200, 30);
+        layers.add(addUserButton, new Integer(2));
+        
+        addUserButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (userType.getSelectedItem().equals("Secretar"))
+                {
+                    Centralizator.getCentralizator().addSecretar(new Secretar(userNameField.getText(), "1234", numeField.getText(), prenumeField.getText()));
+                }
+                else
+                {
+                    Centralizator.getCentralizator().addAdministrator(new Administrator(userNameField.getText(), "1234", numeField.getText(), prenumeField.getText()));
+                }
+                userList.setListData(Centralizator.getCentralizator().getUsers());
+            }
+        });
+        
+        JButton delUserButton = new JButton("Sterge utilizator");
+        delUserButton.setBounds(300, 560, 300, 30);
+        layers.add(delUserButton, new Integer(2));
+        delUserButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Object[] toBeDel = userList.getSelectedValues();
+                for (int i = 0; i < toBeDel.length; i++)
+                {
+                    Centralizator.getCentralizator().delUser((Utilizator) toBeDel[i]);
+                }
+                userList.setListData(Centralizator.getCentralizator().getUsers());
+            }
+        });
+        
+        add(layers);
+        pack();
+        setVisible(true);
     }
 }

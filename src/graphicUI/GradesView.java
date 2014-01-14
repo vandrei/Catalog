@@ -76,7 +76,7 @@ public class GradesView extends CatalogView {
         {
             Materie crr_mat = (Materie) it.next();
             JLabel materieName = new JLabel(crr_mat.toString());
-            materieName.setFont(new Font("SweetlyBroken", Font.PLAIN, 38));
+            materieName.setFont(new Font("JennaSue", Font.PLAIN, 38));
             materieName.setForeground(Color.BLACK);
             materieName.setBounds(50, heightNew, 180, 40);
             layers.add(materieName, new Integer(2));
@@ -85,13 +85,13 @@ public class GradesView extends CatalogView {
             
             JLabel materieNote1 = new JLabel(situatieMat.getGrades(1));
             materieNote1.setBounds(250, heightNew, 250, 40);
-            materieNote1.setFont(new Font("SweetlyBroken", Font.PLAIN, 40));
+            materieNote1.setFont(new Font("JennaSue", Font.PLAIN, 40));
             materieNote1.setForeground(Color.BLUE);
             layers.add(materieNote1, new Integer(2));
             
             JLabel materieNote2 = new JLabel(situatieMat.getGrades(2));
             materieNote2.setBounds(525,heightNew, 250, 40);
-            materieNote2.setFont(new Font("SweetlyBroken", Font.PLAIN, 40));
+            materieNote2.setFont(new Font("JennaSue", Font.PLAIN, 40));
             materieNote2.setForeground(Color.BLUE);
             layers.add(materieNote2, new Integer(2));
             
@@ -101,7 +101,7 @@ public class GradesView extends CatalogView {
                 {
                 JLabel teza = new JLabel(((SituatieMaterieCuTeza)situatieMat).getTeza(1));
                 teza.setBounds(790, heightNew, 25,40);
-                teza.setFont(new Font("SweetlyBroken", Font.PLAIN, 40));
+                teza.setFont(new Font("JennaSue", Font.PLAIN, 40));
                 teza.setForeground(Color.RED);
                 layers.add(teza, new Integer(2));
                 }
@@ -110,7 +110,7 @@ public class GradesView extends CatalogView {
                 {
                 JLabel teza = new JLabel(((SituatieMaterieCuTeza)situatieMat).getTeza(2));
                 teza.setBounds(830, heightNew, 25, 40);
-                teza.setFont(new Font("SweetlyBroken", Font.PLAIN, 40));
+                teza.setFont(new Font("JennaSue", Font.PLAIN, 40));
                 teza.setForeground(Color.RED);
                 layers.add(teza, new Integer(2));
                 }

@@ -55,6 +55,11 @@ public class Centralizator implements java.io.Serializable {
         users.remove(prof.getUsername());
     }
     
+    public void delUser(Utilizator u)
+    {
+        users.remove(u.getUsername());
+    }
+    
     public Materie[] getMateriiNames()
     {
         return materii.keySet().toArray(new Materie[materii.size()]);
@@ -91,6 +96,7 @@ public class Centralizator implements java.io.Serializable {
                  materiiNames = new HashMap<String, Materie>();
                  users.put("andrei", new Elev("andrei", "1234", "Vasilescu", "Andrei", "1234567"));
                  users.put("miki", new Secretar("miki", "1234", "Miki", "Mihaela"));
+                 users.put("administrator", new Administrator("administrator", "1234", "Nume", "Prenume"));
                  //classes.put("9A", new Clasa("9A"));
         }
     }
@@ -139,10 +145,37 @@ public class Centralizator implements java.io.Serializable {
         return profesori.toArray(new Profesor[profesori.size()]);
     }
     
+    public Object[] getUsers()
+    {
+        ArrayList<Utilizator> userList = new ArrayList<Utilizator>();
+        Iterator<String> it = this.users.keySet().iterator();
+        while(it.hasNext())
+        {
+            String name = it.next();
+            Utilizator u = users.get(name);
+            if (u instanceof Secretar)
+                userList.add(u);
+            if (u instanceof Administrator)
+                userList.add(u);
+        }
+        
+        return userList.toArray();
+    }
+    
     public void addProfesor(Profesor profesor)
     {
         profesori.add(profesor);
         users.put(profesor.getUsername(), profesor);
+    }
+    
+    public void addSecretar(Secretar secretar)
+    {
+        users.put(secretar.getUsername(), secretar);
+    }
+    
+    public void addAdministrator(Administrator administrator)
+    {
+        users.put(administrator.getUsername(), administrator);
     }
     
     public void delMaterie(Materie materie)
