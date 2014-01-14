@@ -4,10 +4,7 @@
  */
 package liceu;
 
-import graphicUI.CatalogView;
-import graphicUI.HomeView;
 import graphicUI.LogInView;
-import graphicUI.MainView;
 
 /**
  *
