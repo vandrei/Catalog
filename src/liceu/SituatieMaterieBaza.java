@@ -153,6 +153,18 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         return null;
     }
     
+    public ArrayList<Absenta> getAbsente(int semester)
+    {
+        switch(semester)
+        {
+            case 1:
+                return absente1;
+            case 2:
+                return absente2;
+        }
+        return null;
+    }
+    
     public void addAbsenta(String date, int semester)
     {
         switch(semester)
@@ -181,9 +193,20 @@ public class SituatieMaterieBaza implements java.io.Serializable {
             this.status = "motivata";
         }
         
+        public boolean isMotivata()
+        {
+            return status.equals("motivata");
+        }
+        
+        @Override
         public String toString()
         {
             return date + " - " + status;
+        }
+        
+        public String getDate()
+        {
+            return this.date;
         }
     }
 }

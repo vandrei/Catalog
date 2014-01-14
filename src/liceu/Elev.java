@@ -37,24 +37,34 @@ public class Elev extends Utilizator implements IElev{
     {
         super(userName, password, nume, prenume);
         this.CNP = CNP;
-        //setDataNastere();
+        setDataNastere();
     }
     
     public void changeInfo(String username, String nume, String prenume, String CNP)
     {
         this.CNP = CNP;
-        //setDataNastere();
+        setDataNastere();
         String oldUsername = super.getUsername();
         super.changeInfo(username, nume, prenume);
         Centralizator.getCentralizator().changeUsername(oldUsername, this);
     }
     
+    public void changeInfobyStudent(String username, String nume, String prenume, String password)
+    {
+        super.changeInfo(username, nume, prenume, password);
+    }
+    
+    public String getBirthdate()
+    {
+        return dataNastere.substring(0, 5);
+    }
+    
     private void setDataNastere()
     {
-        String year = CNP.substring(2, 4);
-        String month = CNP.substring(4, 6);
-        String day = CNP.substring(6, 8);
-        this.dataNastere = day + " - " + month + " - 19" + year;
+        String year = CNP.substring(1, 3);
+        String month = CNP.substring(3, 5);
+        String day = CNP.substring(5, 7);
+        this.dataNastere = day + "-" + month + "-19" + year;
     }
 
     public String getClassID()

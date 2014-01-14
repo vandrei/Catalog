@@ -39,6 +39,22 @@ public class Centralizator implements java.io.Serializable {
         readFromFile(0, 4);
     }
     
+    public void delProf(Profesor prof)
+    {
+        Materie mat = prof.getMaterie();
+        Iterator<Clasa> it = materii.get(mat).keySet().iterator();
+        while (it.hasNext())
+        {
+            Clasa cls = it.next();
+            if (materii.get(mat).get(cls) == prof)
+            {
+                materii.get(mat).remove(cls);
+            }
+        }
+        profesori.remove(prof);
+        users.remove(prof.getUsername());
+    }
+    
     public Materie[] getMateriiNames()
     {
         return materii.keySet().toArray(new Materie[materii.size()]);
@@ -116,13 +132,6 @@ public class Centralizator implements java.io.Serializable {
     public Profesor getProfesor(Materie materie, Clasa clasa)
     {
         return materii.get(materie).get(clasa);
-    }
-    
-    public void delProfesor (Profesor profesor)
-    {
-        profesori.remove(profesor);
-        Collection<HashMap<Clasa, Profesor>> col = materii.values();
-        
     }
     
     public Profesor[] getProfesori()

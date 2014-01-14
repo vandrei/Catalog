@@ -14,8 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 import javax.imageio.ImageIO;
@@ -139,25 +142,22 @@ public class HomeView extends MainView {
                 }
                 gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                 layer2.add(gradeList, new Integer(2));
-                
-                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) > 0)
-                {
+
+                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) > 0) {
                     JLabel meanLabel = new JLabel(String.valueOf(selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru)));
                     meanLabel.setBounds(300, 60, 50, 30);
-                    meanLabel.setFont(new Font (meanLabel.getFont().getName(), Font.BOLD, 20));
-                    if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) < 5)
+                    meanLabel.setFont(new Font(meanLabel.getFont().getName(), Font.BOLD, 20));
+                    if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) < 5) {
                         meanLabel.setForeground(Color.RED);
-                    else
+                    } else {
                         meanLabel.setForeground(new Color(0, 153, 76));
+                    }
                     layer2.add(meanLabel, new Integer(2));
-                }
-                else
-                {
+                } else {
                     JButton makeMean = new JButton("Inchide situatie");
                     makeMean.setBounds(300, 60, 150, 30);
                     layer2.add(makeMean, new Integer(2));
                     makeMean.addActionListener(new ActionListener() {
-
                         @Override
                         public void actionPerformed(ActionEvent ae) {
                             selectedClasa.closeSituatie(m, (Elev) eleviList.getSelectedValue(), semestru);
@@ -171,130 +171,129 @@ public class HomeView extends MainView {
                 skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                 layer2.add(skipList, new Integer(2));
 
-                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) == 0)
-                {
-                JButton addSkip = new JButton("+");
-                addSkip.setBounds(400, 360, 50, 30);
-                layer2.add(addSkip, new Integer(2));
+                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) == 0) {
+                    JButton addSkip = new JButton("+");
+                    addSkip.setBounds(400, 360, 50, 30);
+                    layer2.add(addSkip, new Integer(2));
 
-                JButton motivateSkip = new JButton("motiveaza");
-                motivateSkip.setBounds(470, 360, 130, 30);
-                layer2.add(motivateSkip, new Integer(2));
+                    JButton motivateSkip = new JButton("motiveaza");
+                    motivateSkip.setBounds(470, 360, 130, 30);
+                    layer2.add(motivateSkip, new Integer(2));
 
-                JButton delGrade = new JButton("x");
-                delGrade.setBounds(300, 360, 24, 24);
-                layer2.add(delGrade, new Integer(2));
+                    JButton delGrade = new JButton("x");
+                    delGrade.setBounds(300, 360, 24, 24);
+                    layer2.add(delGrade, new Integer(2));
 
 
-                JButton addGrade = new JButton("+");
-                addGrade.setBounds(326, 360, 24, 24);
-                layer2.add(addGrade, new Integer(2));
+                    JButton addGrade = new JButton("+");
+                    addGrade.setBounds(326, 360, 24, 24);
+                    layer2.add(addGrade, new Integer(2));
 
-                addSkip.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        if (layer3.getParent() != null) {
-                            layer3.getParent().remove(layer3);
-                        }
-                        layer3.removeAll();
-                        final JTextField dateSkip = new JTextField();
-                        dateSkip.setBounds(400, 410, 150, 30);
-                        layer3.add(dateSkip, new Integer(2));
-
-                        JButton confirmSkip = new JButton("Adauga");
-                        confirmSkip.setBounds(400, 450, 150, 30);
-
-                        confirmSkip.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent ae) {
-                                layer3.removeAll();
-                                layer3.getParent().remove(layer3);
-                                selectedClasa.addAbsenta((Elev) eleviList.getSelectedValue(), m, dateSkip.getText(), semestru);
-                                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
-                                pack();
-                                repaint();
-                            }
-                        });
-
-                        layer3.add(confirmSkip, new Integer(2));
-                        add(layer3);
-                        pack();
-                        repaint();
-                    }
-                });
-
-                motivateSkip.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        if (layer3.getParent() != null) {
-                            layer3.getParent().remove(layer3);
-                        }
-                        Object[] toBeMotivated = skipList.getSelectedValues();
-                        for (int i = 0; i < toBeMotivated.length; i++) {
-                            ((Absenta) toBeMotivated[i]).motivate();
-                        }
-                        skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
-                        pack();
-                        repaint();
-                    }
-                });
-
-                addGrade.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        final JTextField newNota = new JTextField();
-                        newNota.setBounds(300, 390, 50, 30);
-                        classLayer.add(newNota, new Integer(2));
-
-                        final JButton acceptNota = new JButton("ok");
-                        acceptNota.setBounds(300, 425, 50, 30);
-                        classLayer.add(acceptNota, new Integer(2));
-
-                        acceptNota.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent ae) {
-                                selectedClasa.addGrade((Elev) eleviList.getSelectedValue(), m, semestru, Integer.parseInt(newNota.getText()));
-                                gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
-                                classLayer.remove(newNota);
-                                classLayer.remove(acceptNota);
-                                pack();
-                                repaint();
-                            }
-                        });
-
-                    }
-                });
-
-                if (m.getTeza()) {
-                    final JTextField tezaLabel = new JTextField(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
-                    tezaLabel.setBounds(800, 100, 80, 30);
-                    tezaLabel.setForeground(Color.RED);
-                    layer2.add(tezaLabel, new Integer(2));
-
-                    JButton changeTeza = new JButton("Teza");
-                    changeTeza.setBounds(800, 140, 80, 30);
-                    layer2.add(changeTeza, new Integer(2));
-
-                    changeTeza.addActionListener(new ActionListener() {
+                    addSkip.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
-                            selectedClasa.setTezaatMaterie(m, ((Elev) eleviList.getSelectedValue()), semestru, tezaLabel.getText());
-                            tezaLabel.setText(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                            if (layer3.getParent() != null) {
+                                layer3.getParent().remove(layer3);
+                            }
+                            layer3.removeAll();
+                            final JTextField dateSkip = new JTextField();
+                            dateSkip.setBounds(400, 410, 150, 30);
+                            layer3.add(dateSkip, new Integer(2));
+
+                            JButton confirmSkip = new JButton("Adauga");
+                            confirmSkip.setBounds(400, 450, 150, 30);
+
+                            confirmSkip.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+                                    layer3.removeAll();
+                                    layer3.getParent().remove(layer3);
+                                    selectedClasa.addAbsenta((Elev) eleviList.getSelectedValue(), m, dateSkip.getText(), semestru);
+                                    skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                                    pack();
+                                    repaint();
+                                }
+                            });
+
+                            layer3.add(confirmSkip, new Integer(2));
+                            add(layer3);
+                            pack();
+                            repaint();
                         }
                     });
 
-                }
-
-                delGrade.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        Object[] toBeDel = gradeList.getSelectedValues();
-                        for (int i = 0; i < toBeDel.length; i++) {
-                            selectedClasa.delGrade((Elev) eleviList.getSelectedValue(), m, semestru, (Integer) toBeDel[i]);
+                    motivateSkip.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            if (layer3.getParent() != null) {
+                                layer3.getParent().remove(layer3);
+                            }
+                            Object[] toBeMotivated = skipList.getSelectedValues();
+                            for (int i = 0; i < toBeMotivated.length; i++) {
+                                ((Absenta) toBeMotivated[i]).motivate();
+                            }
+                            skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                            pack();
+                            repaint();
                         }
-                        gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                    });
+
+                    addGrade.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            final JTextField newNota = new JTextField();
+                            newNota.setBounds(300, 390, 50, 30);
+                            classLayer.add(newNota, new Integer(2));
+
+                            final JButton acceptNota = new JButton("ok");
+                            acceptNota.setBounds(300, 425, 50, 30);
+                            classLayer.add(acceptNota, new Integer(2));
+
+                            acceptNota.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+                                    selectedClasa.addGrade((Elev) eleviList.getSelectedValue(), m, semestru, Integer.parseInt(newNota.getText()));
+                                    gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                                    classLayer.remove(newNota);
+                                    classLayer.remove(acceptNota);
+                                    pack();
+                                    repaint();
+                                }
+                            });
+
+                        }
+                    });
+
+                    if (m.getTeza()) {
+                        final JTextField tezaLabel = new JTextField(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                        tezaLabel.setBounds(800, 100, 80, 30);
+                        tezaLabel.setForeground(Color.RED);
+                        layer2.add(tezaLabel, new Integer(2));
+
+                        JButton changeTeza = new JButton("Teza");
+                        changeTeza.setBounds(800, 140, 80, 30);
+                        layer2.add(changeTeza, new Integer(2));
+
+                        changeTeza.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                selectedClasa.setTezaatMaterie(m, ((Elev) eleviList.getSelectedValue()), semestru, tezaLabel.getText());
+                                tezaLabel.setText(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                            }
+                        });
+
                     }
-                });
+
+                    delGrade.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            Object[] toBeDel = gradeList.getSelectedValues();
+                            for (int i = 0; i < toBeDel.length; i++) {
+                                selectedClasa.delGrade((Elev) eleviList.getSelectedValue(), m, semestru, (Integer) toBeDel[i]);
+                            }
+                            gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                        }
+                    });
                 }
                 add(layer2);
                 pack();
@@ -317,7 +316,7 @@ public class HomeView extends MainView {
         clase.add(clasa10);
         clase.add(clasa11);
         clase.add(clasa12);
-        
+
 
         ArrayList<String> classList = Centralizator.getCentralizator().getProfsClasses();
         Iterator<String> classIterator = classList.iterator();
@@ -358,7 +357,7 @@ public class HomeView extends MainView {
                 Centralizator.getCentralizator().signOutUser();
             }
         });
-        
+
         JMenuItem settings = new JMenuItem("Setari cont");
         menuBar.add(clase);
         menuBar.add(contulMeu);
@@ -366,8 +365,8 @@ public class HomeView extends MainView {
         contulMeu.add(logOut);
         final JLayeredPane classLayer = new JLayeredPane();
         makeProfMenu(clase, classLayer);
-        
-        final JMenu userItem = new JMenu(((Profesor)user).getDisplayName());
+
+        final JMenu userItem = new JMenu(((Profesor) user).getDisplayName());
         menuBar.add(new JMenuItem());
         menuBar.add(new JMenuItem());
         menuBar.add(new JMenuItem());
@@ -379,9 +378,8 @@ public class HomeView extends MainView {
         menuBar.add(new JMenuItem());
         menuBar.add(userItem);
         userItem.setEnabled(false);
-        
-        settings.addActionListener(new ActionListener() {
 
+        settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 //hView.removeAll();
@@ -391,43 +389,42 @@ public class HomeView extends MainView {
                 hView.remove(classLayer);
                 hView.remove(layer2);
                 hView.remove(layer3);
-                final JTextField usernameField = new JTextField (((Profesor)user).getUsername());
+                final JTextField usernameField = new JTextField(((Profesor) user).getUsername());
                 usernameField.setBounds(300, 150, 150, 30);
                 classLayer.add(usernameField, new Integer(2));
-                
-                final JTextField numeField = new JTextField (((Profesor)user).getLastName());
+
+                final JTextField numeField = new JTextField(((Profesor) user).getLastName());
                 numeField.setBounds(300, 190, 150, 30);
                 classLayer.add(numeField, new Integer(2));
-                
-                final JTextField prenumeField = new JTextField(((Profesor)user).getFirstName());
+
+                final JTextField prenumeField = new JTextField(((Profesor) user).getFirstName());
                 prenumeField.setBounds(300, 230, 150, 30);
                 classLayer.add(prenumeField, new Integer(2));
-                
-                final JPasswordField passwordField = new JPasswordField(((Profesor)user).getPassword());
+
+                final JPasswordField passwordField = new JPasswordField(((Profesor) user).getPassword());
                 passwordField.setBounds(460, 150, 150, 30);
                 classLayer.add(passwordField, new Integer(2));
-                
-                JLabel materieLabel = new JLabel(((Profesor)user).getMaterie().toString());
-                materieLabel.setBounds(300,270, 150, 30);
+
+                JLabel materieLabel = new JLabel(((Profesor) user).getMaterie().toString());
+                materieLabel.setBounds(300, 270, 150, 30);
                 classLayer.add(materieLabel, new Integer(2));
-                
-                JButton saveChanges = new JButton ("Salveaza modificarile");
+
+                JButton saveChanges = new JButton("Salveaza modificarile");
                 saveChanges.setBounds(250, 310, 250, 30);
                 classLayer.add(saveChanges, new Integer(2));
-                
-                saveChanges.addActionListener(new ActionListener() {
 
+                saveChanges.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
                         user.changeInfo(usernameField.getText(), numeField.getText(), prenumeField.getText(), passwordField.getText());
                         classLayer.removeAll();
                         hView.remove(classLayer);
-                        userItem.setText(((Profesor)user).getDisplayName());
+                        userItem.setText(((Profesor) user).getDisplayName());
                         pack();
                         repaint();
                     }
                 });
-                
+
                 add(classLayer);
                 pack();
                 repaint();
@@ -467,6 +464,14 @@ public class HomeView extends MainView {
             viewSkips.setContentAreaFilled(false);
             viewSkips.setBorderPainted(false);
             layers.add(viewSkips, new Integer(1));
+            viewSkips.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    setVisible(false);
+                    new SkipsView((Elev) user, hView);
+                }
+            });
 
             BufferedImage smallBoard = ImageIO.read(new File("img/blackboard_small.png"));
             JLabel blackboard = new JLabel(new ImageIcon(smallBoard));
@@ -475,12 +480,33 @@ public class HomeView extends MainView {
             layers.add(blackboard, new Integer(2));
 
             JLabel welcomeText = new JLabel("Bine ai revenit, " + user.getFirstName());
-            welcomeText.setFont(new Font("SweetlyBroken", Font.PLAIN, 39));
+            welcomeText.setFont(new Font("JennaSue", Font.PLAIN, 39));
             welcomeText.setForeground(Color.white);
 
             welcomeText.setBounds(blackboard.getBounds().x + 30, blackboard.getBounds().y + 30, 340, 40);
+            
+            JLabel classText = new JLabel(((Elev) user).getClassID());
+            classText.setFont(new Font("JennaSue", Font.PLAIN, 35));
+            classText.setForeground(Color.white);
+            classText.setBounds(blackboard.getBounds().x + 30, blackboard.getBounds().y + 80, 340, 40);
+            
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM");
+            Date date = new Date();
+            String dateString = dateFormat.format(date);
+            
+            String elevBirthDate = ((Elev)user).getBirthdate();
+            
+            if (dateString.equals(elevBirthDate))
+            {
+                JLabel messageText = new JLabel("La multi ani!");
+                messageText.setFont(new Font("JennaSue", Font.PLAIN, 40));
+                messageText.setForeground(Color.white);
+                messageText.setBounds(blackboard.getBounds().x + 30, blackboard.getBounds().y + 130, 340, 40);
+                layers.add(messageText, new Integer(3));
+            }
 
             layers.add(welcomeText, new Integer(3));
+            layers.add(classText, new Integer(3));
 
             BufferedImage leaveImage = ImageIO.read(new File("img/exit.png"));
             JButton signOut = new JButton(new ImageIcon(leaveImage));
@@ -505,13 +531,76 @@ public class HomeView extends MainView {
             info.setContentAreaFilled(false);
             info.setBorderPainted(false);
 
+            final int height = smallBoard.getHeight() + 10;
+            final int width = (1024 - 310) / 2;
+            info.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    if (classEditLayer.getParent() != null) {
+                        hView.remove(classEditLayer);
+                        classEditLayer.removeAll();
+                        pack();
+                        repaint();
+                    } else {
+                        final JTextField usernameField = new JTextField(user.getUsername());
+                        usernameField.setBounds(width, height, 150, 30);
+                        classEditLayer.add(usernameField, new Integer(2));
+
+                        final JTextField numeField = new JTextField(user.getLastName());
+                        numeField.setBounds(width, height+40, 150, 30);
+                        numeField.setEditable(false);
+                        numeField.setEnabled(false);
+                        classEditLayer.add(numeField, new Integer(2));
+
+                        final JTextField prenumeField = new JTextField(user.getFirstName());
+                        prenumeField.setBounds(width + 160, height+40, 150, 30);
+                        prenumeField.setEditable(false);
+                        prenumeField.setEnabled(false);
+                        classEditLayer.add(prenumeField, new Integer(2));
+
+                        final JPasswordField passwordField = new JPasswordField(user.getPassword());
+                        passwordField.setBounds(width + 160, height, 150, 30);
+                        classEditLayer.add(passwordField, new Integer(2));
+                        
+                        final JTextField cnpField = new JTextField(((Elev)user).getCNP());
+                        cnpField.setEditable(false);
+                        cnpField.setEnabled(false);
+                        cnpField.setBounds(width, height + 80, 310, 30);
+                        classEditLayer.add(cnpField, new Integer(2));
+
+                        JButton saveChanges = new JButton("Salveaza modificarile");
+                        saveChanges.setBounds(width, height+120, 310, 30);
+                        classEditLayer.add(saveChanges, new Integer(2));
+
+                        saveChanges.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                ((Elev)user).changeInfobyStudent(usernameField.getText(), numeField.getText(), prenumeField.getText(), passwordField.getText());
+                                classEditLayer.removeAll();
+                                hView.remove(classEditLayer);
+                                pack();
+                                repaint();
+                            }
+                        });
+                        hView.add(classEditLayer);
+                        pack();
+                        repaint();
+                    }
+                }
+            });
             layers.add(info, new Integer(2));
 
 
-            add(layers);
-            pack();
-            setVisible(true);
-        } catch (Exception e) {
+        add(layers);
+        pack();
+        setVisible(true);
+    }
+    catch (Exception e
+
+    
+    
+
+) {
         }
     }
 
@@ -543,7 +632,7 @@ public class HomeView extends MainView {
 
         removeElevButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 Object[] toBeDel = eleviList.getSelectedValues();
                 for (int i = 0; i < toBeDel.length; i++) {
                     selectedClasa.delElev((Elev) toBeDel[i]);
@@ -554,7 +643,7 @@ public class HomeView extends MainView {
 
         editElev.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 final Elev selectedElev = (Elev) eleviList.getSelectedValue();
 
                 final JTextField username = new JTextField(selectedElev.getUsername());
@@ -577,7 +666,7 @@ public class HomeView extends MainView {
 
                 addB.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         selectedElev.changeInfo(username.getText(), name.getText(), prenume.getText(), cnp.getText());
                         selectedElev.changeClasa(clasa.getText());
                         eleviList.setListData(selectedClasa.getElevNames());
@@ -603,7 +692,7 @@ public class HomeView extends MainView {
 
         addElevButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 final JTextField username = new JTextField();
                 username.setBounds(150, 530, 250, 30);
                 username.setText("utilizator");
@@ -622,7 +711,7 @@ public class HomeView extends MainView {
 
                 addB.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         Elev elevN = new Elev(username.getText(), "1234", name.getText(), prenume.getText(), cnp.getText());
                         elevN.setClasa(selectedClasa.getClassID());
                         selectedClasa.addElev(elevN);
@@ -688,14 +777,66 @@ public class HomeView extends MainView {
         materiiMenu.add(delMaterie);
 
         JMenuItem addProfesor = new JMenuItem("Adauga un profesor");
-//       JMenuItem delProfesor = new JMenuItem("Sterge un profesor");
+        JMenuItem delProfesor = new JMenuItem("Sterge un profesor");
 
         profesoriMenu.add(addProfesor);
-//       profesoriMenu.add(delProfesor);
+        profesoriMenu.add(delProfesor);
+        
+        delProfesor.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (classEditLayer.getParent() != null );
+                {
+                    frame.remove(classEditLayer);
+                    classEditLayer.removeAll();
+                }
+                if (profesoriLayer.getParent() != null)
+                {
+                    frame.remove(profesoriLayer);
+                    profesoriLayer.removeAll();
+                }
+                if (addClassLayer.getParent() != null)
+                {
+                    frame.remove(addClassLayer);
+                }
+                if (materiilayer.getParent() != null)
+                {
+                    frame.remove(materiilayer);
+                    materiilayer.removeAll();
+                }
+                final JList profesoriList = new JList(Centralizator.getCentralizator().getProfesori());
+                profesoriList.setBounds(400, 200, 300, 400);
+                classEditLayer.add(profesoriList, new Integer(2));
+                
+                JButton del = new JButton("Sterge");
+                del.setBounds(400, 610, 300, 30);
+                classEditLayer.add(del, new Integer(2));
+                
+                del.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        Object[] toBeDel = profesoriList.getSelectedValues();
+                        for (int i = 0; i < toBeDel.length; i++)
+                        {
+                            Centralizator.getCentralizator().delProf((Profesor) toBeDel[i]);
+                        }
+                        hView.remove(classEditLayer);
+                        classEditLayer.removeAll();
+                        pack();
+                        repaint();
+                    }
+                });
+                add(classEditLayer);
+                pack();
+                repaint();
+            }
+        });
 
         logOutItem.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 setVisible(false);
                 Centralizator.getCentralizator().signOutUser();
             }
@@ -716,7 +857,7 @@ public class HomeView extends MainView {
         settings.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 //hView.removeAll();
                 if (classEditLayer.getParent() != null );
                 {
@@ -760,7 +901,7 @@ public class HomeView extends MainView {
                 saveChanges.addActionListener(new ActionListener() {
 
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         user.changeInfo(usernameField.getText(), numeField.getText(), prenumeField.getText(), passwordField.getText());
                         userItem.setText(((Secretar)user).toString());
                         classEditLayer.removeAll();
@@ -776,7 +917,7 @@ public class HomeView extends MainView {
 
         addMaterie.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 if (classEditLayer.getParent() != null );
                 {
                     frame.remove(classEditLayer);
@@ -820,7 +961,7 @@ public class HomeView extends MainView {
 
                 executeAdd.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         Centralizator.getCentralizator().addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()), teza.isSelected()));
                         materii2List.setListData(Centralizator.getCentralizator().getMateriiNames());
                     }
@@ -834,7 +975,7 @@ public class HomeView extends MainView {
         delMaterie.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 if (classEditLayer.getParent() != null );
                 {
                     frame.remove(classEditLayer);
@@ -867,7 +1008,7 @@ public class HomeView extends MainView {
                 executeDel.addActionListener(new ActionListener() {
 
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         Object[] toBeDel = materii2List.getSelectedValues();
                         for (int i = 0 ; i < toBeDel.length; i++)
                 {
@@ -884,7 +1025,7 @@ public class HomeView extends MainView {
         
         addProfesor.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 if (classEditLayer.getParent() != null) {
                     frame.remove(classEditLayer);
                 }
@@ -929,7 +1070,7 @@ public class HomeView extends MainView {
                 profesoriLayer.add(addProfesorButton, new Integer(2));
                 addProfesorButton.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                         
                         Centralizator.getCentralizator().addProfesor(new Profesor(username.getText(), "1234", nume.getText(), prenume.getText(), (Materie) materie.getSelectedItem()));
                         if (profesoriLayer.getParent() != null) {
@@ -965,7 +1106,7 @@ public class HomeView extends MainView {
         addClasaButton.setBounds(250, 290, 150, 30);
         addClasaButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 ((Secretar) user).addClasa(className.getText());
                 homeViewvar.remove(addClassLayer);
                 makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, homeViewvar, classEditLayer, materiiList, profesoriLayer);
@@ -976,7 +1117,7 @@ public class HomeView extends MainView {
 
         addClasa.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 if (classEditLayer.getParent() != null) {
                     homeViewvar.remove(classEditLayer);
                 }
@@ -1012,7 +1153,7 @@ public class HomeView extends MainView {
         JMenuItem crr_item = new JMenuItem(classID);
         crr_item.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                 Centralizator c = Centralizator.getCentralizator();
                 Clasa cl = c.getClasa(ae.getActionCommand());
                 Elev[] elevi = (Elev[]) cl.getElevNames();
@@ -1057,7 +1198,7 @@ public class HomeView extends MainView {
             clasax.add(crr_item);
             crr_item.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                     Centralizator c = Centralizator.getCentralizator();
                     Clasa cl = c.getClasa(ae.getActionCommand());
                     Elev[] elevi = (Elev[]) cl.getElevNames();
@@ -1092,7 +1233,7 @@ public class HomeView extends MainView {
                     classEditLayer.add(addMaterie, new Integer(2));
                     addMaterie.addActionListener(new ActionListener() {
                         @Override
-                        public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                             
 
                             final JButton executeAdd = new JButton("Adauga materia");
@@ -1105,7 +1246,7 @@ public class HomeView extends MainView {
 
                             executeAdd.addActionListener(new ActionListener() {
                                 @Override
-                                public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                                     selectedClasa.addMaterie((Profesor) profesor.getSelectedItem());
                                //     selectedClasa.addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()),
                                //             teza.isSelected()), (Profesor) profesor.getSelectedItem());
@@ -1124,7 +1265,7 @@ public class HomeView extends MainView {
                     classEditLayer.add(delMaterie, new Integer(2));
                     delMaterie.addActionListener(new ActionListener() {
                         @Override
-                        public void actionPerformed(ActionEvent ae) {
+        public void actionPerformed(ActionEvent ae) {
                             Object[] selectedMaterii = materiiList.getSelectedValues();
                             for (int i = 0; i < selectedMaterii.length; i++) {
                                 selectedClasa.delMaterie((Materie) selectedMaterii[i]);
