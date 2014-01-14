@@ -164,9 +164,9 @@ public class Centralizator implements java.io.Serializable {
         users.put(user.getUsername(), user);
     }
 
-    public void changeUsername(String newUsername, Utilizator user) {
-        users.remove(user.getUsername());
-        users.put(newUsername, user);
+    public void changeUsername(String oldUsername, Utilizator user) {
+        users.remove(oldUsername);
+        users.put(user.getUsername(), user);
     }
 
     public void moveElev(String oldClassID, String newClassID, Elev elev) {

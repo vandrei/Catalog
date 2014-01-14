@@ -32,15 +32,18 @@ public abstract class Utilizator implements java.io.Serializable {
     }
 
     public void changeInfo(String username, String nume, String prenume, String passwd) {
-        Centralizator.getCentralizator().changeUsername(username, this);
+        String oldName = this.userName;
         this.userName = username;
+        Centralizator.getCentralizator().changeUsername(oldName, this);
         this.nume = nume;
         this.prenume = prenume;
         this.password = passwd;
     }
 
     public void changeInfo(String username, String nume, String prenume) {
+        String oldName = this.userName;
         this.userName = username;
+        Centralizator.getCentralizator().changeUsername(oldName, this);
         this.nume = nume;
         this.prenume = prenume;
     }

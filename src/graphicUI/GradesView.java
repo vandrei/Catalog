@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,9 +42,15 @@ public class GradesView extends CatalogView {
         this.back = back;
         situatieElev = elev.getSituatie();
         int nr_materii = situatieElev.size();
-        Set<Materie> materii = null;
-        materii = situatieElev.keySet();
-        Iterator it = materii.iterator();
+        Materie[] materii = (Materie[]) situatieElev.keySet().toArray(new Materie[situatieElev.keySet().size()]);
+        Arrays.sort(materii, new Comparator<Materie>() {
+
+            @Override
+            public int compare(Materie t, Materie t1) {
+                return t.toString().compareTo(t1.toString());
+            }
+        });
+        
         JLayeredPane layers = new JLayeredPane();
 
         JLabel s1Expl = new JLabel("Semetrul 1");
@@ -71,8 +79,8 @@ public class GradesView extends CatalogView {
 
 
         int heightNew = 105;
-        for (int i = 0; i < nr_materii; i++) {
-            Materie crr_mat = (Materie) it.next();
+        for (int i = 0; i < materii.length; i++) {
+            Materie crr_mat = materii[i];
             JLabel materieName = new JLabel(crr_mat.toString());
             materieName.setFont(new Font("JennaSue", Font.PLAIN, 38));
             materieName.setForeground(Color.BLACK);

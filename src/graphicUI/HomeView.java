@@ -159,8 +159,12 @@ public class HomeView extends MainView {
         final Comparator<Elev> meanCompD = new Comparator<Elev>() {
             @Override
             public int compare(Elev t, Elev t1) {
-                int G1 = t1.getSituatie().get(((Profesor) user).getMaterie()).getMean(0);
-                int G2 = t.getSituatie().get(((Profesor) user).getMaterie()).getMean(0);
+                int sem = 1;
+                if (sem2.isSelected()) {
+                    sem = 2;
+                }
+                int G1 = t1.getSituatie().get(((Profesor) user).getMaterie()).getMean(sem);
+                int G2 = t.getSituatie().get(((Profesor) user).getMaterie()).getMean(sem);
                 if (G1 < G2) {
                     return -1;
                 }
@@ -447,9 +451,11 @@ public class HomeView extends MainView {
 
 
         ArrayList<String> classList = Centralizator.getCentralizator().getProfsClasses();
-        Iterator<String> classIterator = classList.iterator();
-        while (classIterator.hasNext()) {
-            final String cName = classIterator.next();
+        String[] classes = classList.toArray(new String[classList.size()]);
+        Arrays.sort(classes);
+        for (int i = 0; i < classes.length; i++)
+        {
+            final String cName = classes[i];
             JMenu clasax;
             if (cName.startsWith("9")) {
                 clasax = clasa9;
@@ -1314,10 +1320,12 @@ public class HomeView extends MainView {
         clasa12.removeAll();
         Centralizator centralizator = Centralizator.getCentralizator();
         Set<String> classNames = centralizator.getClassNames();
-        Iterator classIterator = classNames.iterator();
+        String[] classes = classNames.toArray(new String[classNames.size()]);
+        Arrays.sort(classes);
 
-        while (classIterator.hasNext()) {
-            String cName = (String) classIterator.next();
+        for (int i = 0; i < classes.length; i++)
+        {
+            String cName = (String) classes[i];
             JMenuItem crr_item = new JMenuItem(cName);
             JMenu clasax;
             if (cName.startsWith("9")) {
