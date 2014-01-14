@@ -6,8 +6,12 @@ package graphicUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +36,14 @@ public class SkipsView extends CatalogView {
 
     public SkipsView(Elev elev, final HomeView back) {
         super();
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/JennaSue.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Sweetly Broken.ttf")));
+        } catch (IOException e) {
+        } catch (FontFormatException e)
+        {}
+        
         this.user = elev;
         this.back = back;
         situatieElev = elev.getSituatie();

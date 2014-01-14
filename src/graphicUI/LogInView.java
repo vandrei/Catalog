@@ -6,12 +6,15 @@ package graphicUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -70,6 +73,14 @@ public class LogInView extends MainView implements ActionListener {
     public LogInView() {
         super();
         //this.user = user;
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/JennaSue.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Sweetly Broken.ttf")));
+        } catch (IOException e) {
+        } catch (FontFormatException e)
+        {}
+        
         try {
 
             layers = new JLayeredPane();

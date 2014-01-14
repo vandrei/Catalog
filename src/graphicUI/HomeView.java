@@ -6,10 +6,13 @@ package graphicUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -67,6 +70,14 @@ public class HomeView extends MainView {
 
     public HomeView(Utilizator user) {
         super();
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/JennaSue.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Sweetly Broken.ttf")));
+        } catch (IOException e) {
+        } catch (FontFormatException e)
+        {}
+        
         this.user = user;
         this.hView = this;
 

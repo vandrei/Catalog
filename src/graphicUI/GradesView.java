@@ -7,8 +7,12 @@ package graphicUI;
 import apple.awt.CColor;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,6 +42,13 @@ public class GradesView extends CatalogView {
 
     public GradesView(Elev elev, final HomeView back) {
         super();
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/JennaSue.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Sweetly Broken.ttf")));
+        } catch (IOException e) {
+        } catch (FontFormatException e)
+        {}
         this.user = elev;
         this.back = back;
         situatieElev = elev.getSituatie();
