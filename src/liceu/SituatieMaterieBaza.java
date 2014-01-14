@@ -77,6 +77,9 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 }
                 note = note2;
                 break;
+            case 0:
+                float x = getMean(1) + getMean(2) / 2;
+                return Math.round(x);
         }
         
         Iterator<Integer> i = note.iterator();

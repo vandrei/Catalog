@@ -102,6 +102,13 @@ public class Clasa implements java.io.Serializable {
     
     public void delMaterie(Materie materie)
     {
+        materii.remove(materie);
+        Iterator<Elev> it = Catalog.keySet().iterator();
+        while (it.hasNext())
+        {
+            Elev e = it.next();
+            Catalog.get(e).remove(materie);
+        }
     }
     
         public void changeMaterie(Materie materie, String materieName, int nrOre, boolean Teza, Profesor profesor)
