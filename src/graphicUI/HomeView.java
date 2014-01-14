@@ -99,7 +99,7 @@ public class HomeView extends MainView {
         classLayer.removeAll();
         final JList eleviList = new JList();
         final Elev[] elevName = selectedClasa.getElevNames();
-        
+
         final JRadioButton sem1 = new JRadioButton("Semestrul 1");
         sem1.setBounds(100, 355, 150, 30);
         sem1.setForeground(Color.white);
@@ -114,7 +114,7 @@ public class HomeView extends MainView {
         ButtonGroup group = new ButtonGroup();
         group.add(sem1);
         group.add(sem2);
-        
+
         final Comparator<Elev> alphaCompU = new Comparator<Elev>() {
             @Override
             public int compare(Elev t, Elev t1) {
@@ -141,8 +141,9 @@ public class HomeView extends MainView {
             @Override
             public int compare(Elev t, Elev t1) {
                 int sem = 1;
-                if (sem2.isSelected())
+                if (sem2.isSelected()) {
                     sem = 2;
+                }
                 int G1 = t.getSituatie().get(((Profesor) user).getMaterie()).getMean(sem);
                 int G2 = t1.getSituatie().get(((Profesor) user).getMaterie()).getMean(sem);
                 if (G1 < G2) {
@@ -1432,73 +1433,66 @@ public class HomeView extends MainView {
         userList.setListData(users);
         userList.setBounds(300, 150, 300, 400);
         layers.add(userList, new Integer(2));
-        
+
         JButton signOutButton = new JButton("Iesire");
         signOutButton.setBounds(970, 50, 40, 20);
         layers.add(signOutButton, new Integer(2));
         signOutButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 setVisible(false);
                 Centralizator.getCentralizator().signOutUser();
             }
         });
-        
+
         final JTextField userNameField = new JTextField("utilizator");
         userNameField.setBounds(700, 150, 200, 30);
         layers.add(userNameField, new Integer(2));
-        
+
         final JTextField numeField = new JTextField("nume");
         numeField.setBounds(700, 220, 200, 30);
         layers.add(numeField, new Integer(2));
-        
+
         final JTextField prenumeField = new JTextField("prenume");
         prenumeField.setBounds(700, 255, 200, 30);
         layers.add(prenumeField, new Integer(2));
-        
+
         final JComboBox userType = new JComboBox();
         userType.addItem("Secretar");
         userType.addItem("Administrator");
         userType.setBounds(700, 185, 200, 30);
         layers.add(userType, new Integer(2));
-        
+
         JButton addUserButton = new JButton("Adauga utilizator");
         addUserButton.setBounds(700, 290, 200, 30);
         layers.add(addUserButton, new Integer(2));
-        
-        addUserButton.addActionListener(new ActionListener() {
 
+        addUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (userType.getSelectedItem().equals("Secretar"))
-                {
+                if (userType.getSelectedItem().equals("Secretar")) {
                     Centralizator.getCentralizator().addSecretar(new Secretar(userNameField.getText(), "1234", numeField.getText(), prenumeField.getText()));
-                }
-                else
-                {
+                } else {
                     Centralizator.getCentralizator().addAdministrator(new Administrator(userNameField.getText(), "1234", numeField.getText(), prenumeField.getText()));
                 }
                 userList.setListData(Centralizator.getCentralizator().getUsers());
             }
         });
-        
+
         JButton delUserButton = new JButton("Sterge utilizator");
         delUserButton.setBounds(300, 560, 300, 30);
         layers.add(delUserButton, new Integer(2));
         delUserButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Object[] toBeDel = userList.getSelectedValues();
-                for (int i = 0; i < toBeDel.length; i++)
-                {
+                for (int i = 0; i < toBeDel.length; i++) {
                     Centralizator.getCentralizator().delUser((Utilizator) toBeDel[i]);
                 }
                 userList.setListData(Centralizator.getCentralizator().getUsers());
             }
         });
-        
+
         add(layers);
         pack();
         setVisible(true);

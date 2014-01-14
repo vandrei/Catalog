@@ -12,7 +12,6 @@ import java.util.Vector;
  * @author andrei
  */
 public interface IElev {
-    
+
     public HashMap<Materie, ? extends SituatieMaterieBaza> getSituatie();
-    
 }

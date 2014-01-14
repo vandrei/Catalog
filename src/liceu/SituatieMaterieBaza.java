@@ -14,7 +14,7 @@ import java.util.List;
  * @author andrei
  */
 public class SituatieMaterieBaza implements java.io.Serializable {
-    
+
     private ArrayList<Integer> note1;
     private ArrayList<Integer> note2;
     private ArrayList<Absenta> absente1;
@@ -22,19 +22,16 @@ public class SituatieMaterieBaza implements java.io.Serializable {
     private float medie1, medie2;
     private boolean showMean1 = false;
     private boolean showMean2 = false;
-    
-    public SituatieMaterieBaza()
-    {
+
+    public SituatieMaterieBaza() {
         note1 = new ArrayList<Integer>();
         note2 = new ArrayList<Integer>();
         absente1 = new ArrayList<Absenta>();
         absente2 = new ArrayList<Absenta>();
     }
-    
-    public void delGrade(int semestru, Integer grade)
-    {
-        switch(semestru)
-        {
+
+    public void delGrade(int semestru, Integer grade) {
+        switch (semestru) {
             case 1:
                 note1.remove(grade);
                 break;
@@ -43,11 +40,9 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 break;
         }
     }
-    
-    public void addGrade(int semestru, Integer grade)
-    {
-        switch(semestru)
-        {
+
+    public void addGrade(int semestru, Integer grade) {
+        switch (semestru) {
             case 1:
                 note1.add(grade);
                 break;
@@ -56,23 +51,19 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 break;
         }
     }
-    
-    public int getMean(int semestru)
-    {
+
+    public int getMean(int semestru) {
         float mean = 0;
         List<Integer> note = null;
-        switch (semestru)
-        {
-            case 1: 
-                if (showMean1 == false)
-                {
+        switch (semestru) {
+            case 1:
+                if (showMean1 == false) {
                     return 0;
                 }
                 note = note1;
                 break;
             case 2:
-                if (showMean2 == false)
-                {
+                if (showMean2 == false) {
                     return 0;
                 }
                 note = note2;
@@ -81,21 +72,18 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 float x = getMean(1) + getMean(2) / 2;
                 return Math.round(x);
         }
-        
+
         Iterator<Integer> i = note.iterator();
-        while(i.hasNext())
-        {
-            mean += ((Integer)i.next()).intValue();
+        while (i.hasNext()) {
+            mean += ((Integer) i.next()).intValue();
         }
-        
+
         mean = mean / note.size();
         return Math.round(mean);
     }
-    
-    public void showMean(int semestru)
-    {
-        switch(semestru)
-        {
+
+    public void showMean(int semestru) {
+        switch (semestru) {
             case 1:
                 showMean1 = true;
                 break;
@@ -104,12 +92,10 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 break;
         }
     }
-    
-    public String getGrades(int semestru)
-    {
+
+    public String getGrades(int semestru) {
         List<Integer> note = null;
-        switch (semestru)
-        {
+        switch (semestru) {
             case 1:
                 note = note1;
                 break;
@@ -117,25 +103,21 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 note = note2;
                 break;
         }
-        
+
         Iterator i = note.iterator();
         String grades = "";
-        if (i.hasNext())
-        {
+        if (i.hasNext()) {
             grades += i.next().toString();
         }
-        
-        while(i.hasNext())
-        {
+
+        while (i.hasNext()) {
             grades += ", " + i.next().toString();
         }
         return grades;
     }
-    
-    public Integer[] getGradesForProf(int semestru)
-    {
-        switch(semestru)
-        {
+
+    public Integer[] getGradesForProf(int semestru) {
+        switch (semestru) {
             case 1:
                 return (Integer[]) note1.toArray(new Integer[note1.size()]);
             case 2:
@@ -143,11 +125,9 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         }
         return null;
     }
-    
-    public Absenta[] getAbsenteForProf(int semestru)
-    {
-        switch (semestru)
-        {
+
+    public Absenta[] getAbsenteForProf(int semestru) {
+        switch (semestru) {
             case 1:
                 return absente1.toArray(new Absenta[absente1.size()]);
             case 2:
@@ -155,11 +135,9 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         }
         return null;
     }
-    
-    public ArrayList<Absenta> getAbsente(int semester)
-    {
-        switch(semester)
-        {
+
+    public ArrayList<Absenta> getAbsente(int semester) {
+        switch (semester) {
             case 1:
                 return absente1;
             case 2:
@@ -167,11 +145,9 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         }
         return null;
     }
-    
-    public void addAbsenta(String date, int semester)
-    {
-        switch(semester)
-        {
+
+    public void addAbsenta(String date, int semester) {
+        switch (semester) {
             case 1:
                 absente1.add(new Absenta(date));
                 break;
@@ -180,35 +156,31 @@ public class SituatieMaterieBaza implements java.io.Serializable {
                 break;
         }
     }
-    
+
     public class Absenta implements java.io.Serializable {
+
         private String date;
         private String status;
-        
-        public Absenta(String date)
-        {
+
+        public Absenta(String date) {
             this.date = date;
             this.status = "nemotivata";
         }
-        
-        public void motivate()
-        {
+
+        public void motivate() {
             this.status = "motivata";
         }
-        
-        public boolean isMotivata()
-        {
+
+        public boolean isMotivata() {
             return status.equals("motivata");
         }
-        
+
         @Override
-        public String toString()
-        {
+        public String toString() {
             return date + " - " + status;
         }
-        
-        public String getDate()
-        {
+
+        public String getDate() {
             return this.date;
         }
     }

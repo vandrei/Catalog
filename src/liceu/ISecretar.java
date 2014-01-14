@@ -9,7 +9,6 @@ package liceu;
  * @author andrei
  */
 public interface ISecretar {
-    
+
     public void addClasa(String classID);
-    
 }

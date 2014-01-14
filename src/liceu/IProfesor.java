@@ -9,5 +9,4 @@ package liceu;
  * @author andrei
  */
 public interface IProfesor {
-    
 }

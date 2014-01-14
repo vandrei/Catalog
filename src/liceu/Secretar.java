@@ -9,8 +9,8 @@ package liceu;
  * @author andrei
  */
 public class Secretar extends Utilizator implements ISecretar {
-    public Secretar(String userName, String password, String nume, String prenume)
-    {
+
+    public Secretar(String userName, String password, String nume, String prenume) {
         super(userName, password, nume, prenume);
     }
 
@@ -18,10 +18,8 @@ public class Secretar extends Utilizator implements ISecretar {
     public void addClasa(String classID) {
         Centralizator.getCentralizator().addClasa(classID);
     }
-    
-    public String toString()
-    {
+
+    public String toString() {
         return super.getFirstName() + " " + super.getLastName();
     }
-    
 }

@@ -9,18 +9,16 @@ package liceu;
  * @author andrei
  */
 public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.io.Serializable {
+
     private int teza1;
     private int teza2;
-    
-    public SituatieMaterieCuTeza()
-    {
+
+    public SituatieMaterieCuTeza() {
         super();
     }
-    
-    public void addTeza(String grade, int semester)
-    {
-        switch(semester)
-        {
+
+    public void addTeza(String grade, int semester) {
+        switch (semester) {
             case 1:
                 teza1 = Integer.parseInt(grade);
                 break;
@@ -29,10 +27,9 @@ public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.i
                 break;
         }
     }
-    
+
     public String getTeza(int i) {
-        switch(i)
-        {
+        switch (i) {
             case 1:
                 return String.valueOf(teza1);
             case 2:
@@ -40,15 +37,14 @@ public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.i
         }
         return null;
     }
-    
+
     @Override
-    public int getMean(int semestru)
-    {
-        if (super.getMean(semestru) == 0)
+    public int getMean(int semestru) {
+        if (super.getMean(semestru) == 0) {
             return 0;
+        }
         float mean = super.getMean(semestru);
-        switch(semestru)
-        {
+        switch (semestru) {
             case 1:
                 mean = mean * 3 + teza1;
                 break;
@@ -59,6 +55,4 @@ public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.i
         mean = mean / 4;
         return Math.round(mean);
     }
-    
-    
 }
