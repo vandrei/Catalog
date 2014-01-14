@@ -39,6 +39,17 @@ public class Centralizator implements java.io.Serializable {
         readFromFile(0, 4);
     }
     
+    public Materie[] getMateriiNames()
+    {
+        return materii.keySet().toArray(new Materie[materii.size()]);
+    }
+    
+    public void putProfesorinClass(Profesor profesor, Clasa cls)
+    {
+        materii.get(profesor.getMaterie()).put(cls, profesor);
+    }
+                
+    
     private void readFromFile(int i, int limit)
     {
         try
@@ -70,7 +81,7 @@ public class Centralizator implements java.io.Serializable {
     
     public Materie getProfsMaterie()
     {
-        return materiiNames.get(((Profesor)loggedInUser).getMaterie());
+        return ((Profesor) loggedInUser).getMaterie();
     }
     
     public ArrayList<String> getProfsClasses()
@@ -91,6 +102,17 @@ public class Centralizator implements java.io.Serializable {
         return clase;
     }
     
+    public void addMaterie (Materie materie)
+    {
+        materii.put(materie, new HashMap<Clasa, Profesor>());
+        materiiNames.put(materie.toString(), materie);
+    }
+    
+    
+    public void addMaterietoClasa (Clasa clasa, Profesor profesor)
+    {
+        materii.get(profesor.getMaterie()).put(clasa, profesor);
+    }
     public Profesor getProfesor(Materie materie, Clasa clasa)
     {
         return materii.get(materie).get(clasa);
@@ -114,23 +136,10 @@ public class Centralizator implements java.io.Serializable {
         users.put(profesor.getUsername(), profesor);
     }
     
-    public void addMaterie(Materie materie, Profesor profesor, Clasa clasa)
+    public void delMaterie(Materie materie)
     {
-        if (materiiNames.containsKey(materie.toString()))
-        {
-            materie = materiiNames.get(materie.toString());
-        }
-        else
-        {
-            materii.put(materie, new HashMap<Clasa, Profesor>());
-            materiiNames.put(materie.toString(), materie);
-        }
-        materii.get(materie).put(clasa, profesor);
-    }
-    
-    public void delMaterie(Materie materie, Clasa clasa)
-    {
-        materii.get(materie).remove(clasa);
+        materii.remove(materie);
+        materiiNames.remove(materie.toString());
     }
     
     public void addUtilizator (Utilizator user)
@@ -138,10 +147,10 @@ public class Centralizator implements java.io.Serializable {
         users.put(user.getUsername(), user);
     }
     
-    public void changeUsername (String oldUsername, Utilizator user)
+    public void changeUsername (String newUsername, Utilizator user)
     {
-        users.remove(oldUsername);
-        users.put(user.getUsername(), user);
+        users.remove(user.getUsername());
+        users.put(newUsername, user);
     }
      
     public void moveElev(String oldClassID, String newClassID, Elev elev)

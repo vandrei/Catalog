@@ -19,7 +19,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,10 +34,13 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import liceu.Administrator;
@@ -56,7 +61,13 @@ public class HomeView extends MainView {
 
     private Utilizator user;
     private JLayeredPane layers;
+    private final JLayeredPane materiilayer = new JLayeredPane();
     private Clasa selectedClasa;
+    private final JLayeredPane classEditLayer = new JLayeredPane();
+    private final JLayeredPane profesoriLayer = new JLayeredPane();
+    private final JLayeredPane addClassLayer = new JLayeredPane();
+    private final JLayeredPane layer2 = new JLayeredPane();
+    private final JLayeredPane layer3 = new JLayeredPane();
     private int semestru;
     private HomeView hView;
 
@@ -75,216 +86,229 @@ public class HomeView extends MainView {
             homeForAdmin();
         }
     }
-    
-    private void makeClassLayer(final JLayeredPane classLayer, String cName)
-    {
+
+    private void makeClassLayer(final JLayeredPane classLayer, String cName) {
         classLayer.removeAll();
-        final JLayeredPane layer2 = new JLayeredPane();
-        final JLayeredPane layer3 = new JLayeredPane();
         final JList eleviList = new JList();
         eleviList.setListData(selectedClasa.getElevNames());
         eleviList.setBounds(100, 100, 150, 250);
         classLayer.add(eleviList, new Integer(2));
-        
-        JButton viewElev = new JButton("Afiseaza situatie");
+
+        final JButton viewElev = new JButton("Afiseaza situatie");
         viewElev.setBounds(100, 430, 150, 30);
         classLayer.add(viewElev, new Integer(2));
-        
+
         final JRadioButton sem1 = new JRadioButton("Semestrul 1");
         sem1.setBounds(100, 355, 150, 30);
         sem1.setForeground(Color.white);
         sem1.setSelected(true);
         classLayer.add(sem1, new Integer(2));
-        
+
         final JRadioButton sem2 = new JRadioButton("Semestrul 2");
         sem2.setBounds(100, 390, 150, 30);
         sem2.setForeground(Color.white);
         classLayer.add(sem2, new Integer(2));
-        
+
         ButtonGroup group = new ButtonGroup();
         group.add(sem1);
         group.add(sem2);
-        
+
         //super.add(layer2);
 
-        
-        viewElev.addActionListener(new ActionListener() {
 
+        viewElev.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 layer2.removeAll();
-                if (layer2.getParent() != null)
-                {
+                if (layer2.getParent() != null) {
                     layer2.getParent().remove(layer2);
+                    layer2.removeAll();
                 }
-                
-                if(layer3.getParent() != null)
+
+                if (layer3.getParent() != null) {
                     layer3.getParent().remove(layer3);
+                    layer3.removeAll();
+                }
                 final JList gradeList = new JList();
                 gradeList.setBounds(300, 100, 50, 250);
                 final Materie m = Centralizator.getCentralizator().getProfsMaterie();
-                if (sem2.isSelected())
-                {
+                if (sem2.isSelected()) {
                     semestru = 2;
+                } else {
+                    semestru = 1;
+                }
+                gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                layer2.add(gradeList, new Integer(2));
+                
+                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) > 0)
+                {
+                    JLabel meanLabel = new JLabel(String.valueOf(selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru)));
+                    meanLabel.setBounds(300, 60, 50, 30);
+                    meanLabel.setFont(new Font (meanLabel.getFont().getName(), Font.BOLD, 20));
+                    if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) < 5)
+                        meanLabel.setForeground(Color.RED);
+                    else
+                        meanLabel.setForeground(new Color(0, 153, 76));
+                    layer2.add(meanLabel, new Integer(2));
                 }
                 else
                 {
-                    semestru = 1;
+                    JButton makeMean = new JButton("Inchide situatie");
+                    makeMean.setBounds(300, 60, 150, 30);
+                    layer2.add(makeMean, new Integer(2));
+                    makeMean.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            selectedClasa.closeSituatie(m, (Elev) eleviList.getSelectedValue(), semestru);
+                            ActionListener[] a = viewElev.getActionListeners();
+                            a[0].actionPerformed(new ActionEvent(viewElev, 0, null));
+                        }
+                    });
                 }
-                gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
-                layer2.add(gradeList, new Integer(2));
-                
                 final JList skipList = new JList();
                 skipList.setBounds(400, 100, 200, 250);
-                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                 layer2.add(skipList, new Integer(2));
-                
+
+                if (selectedClasa.getMeanAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru) == 0)
+                {
                 JButton addSkip = new JButton("+");
                 addSkip.setBounds(400, 360, 50, 30);
                 layer2.add(addSkip, new Integer(2));
-                
+
                 JButton motivateSkip = new JButton("motiveaza");
                 motivateSkip.setBounds(470, 360, 130, 30);
                 layer2.add(motivateSkip, new Integer(2));
-                
+
                 JButton delGrade = new JButton("x");
                 delGrade.setBounds(300, 360, 24, 24);
                 layer2.add(delGrade, new Integer(2));
-                
-                
+
+
                 JButton addGrade = new JButton("+");
                 addGrade.setBounds(326, 360, 24, 24);
                 layer2.add(addGrade, new Integer(2));
-                
-                addSkip.addActionListener(new ActionListener() {
 
+                addSkip.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
-                        if (layer3.getParent() != null)
-                        {
+                        if (layer3.getParent() != null) {
                             layer3.getParent().remove(layer3);
                         }
                         layer3.removeAll();
                         final JTextField dateSkip = new JTextField();
                         dateSkip.setBounds(400, 410, 150, 30);
                         layer3.add(dateSkip, new Integer(2));
-                        
+
                         JButton confirmSkip = new JButton("Adauga");
                         confirmSkip.setBounds(400, 450, 150, 30);
-                        
-                        confirmSkip.addActionListener(new ActionListener() {
 
+                        confirmSkip.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent ae) {
                                 layer3.removeAll();
                                 layer3.getParent().remove(layer3);
-                                selectedClasa.addAbsenta((Elev)eleviList.getSelectedValue(), m, dateSkip.getText(), semestru);
-                                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                                selectedClasa.addAbsenta((Elev) eleviList.getSelectedValue(), m, dateSkip.getText(), semestru);
+                                skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                                 pack();
                                 repaint();
                             }
                         });
-                        
+
                         layer3.add(confirmSkip, new Integer(2));
                         add(layer3);
                         pack();
                         repaint();
                     }
                 });
-                
-                motivateSkip.addActionListener(new ActionListener() {
 
+                motivateSkip.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
-                        if (layer3.getParent() != null)
+                        if (layer3.getParent() != null) {
                             layer3.getParent().remove(layer3);
+                        }
                         Object[] toBeMotivated = skipList.getSelectedValues();
-                        for (int i = 0; i < toBeMotivated.length; i++)
-                        {
+                        for (int i = 0; i < toBeMotivated.length; i++) {
                             ((Absenta) toBeMotivated[i]).motivate();
                         }
-                        skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                        skipList.setListData(selectedClasa.getAbsenteAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                         pack();
                         repaint();
                     }
                 });
-                
-                addGrade.addActionListener(new ActionListener() {
 
+                addGrade.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
                         final JTextField newNota = new JTextField();
                         newNota.setBounds(300, 390, 50, 30);
                         classLayer.add(newNota, new Integer(2));
-                        
+
                         final JButton acceptNota = new JButton("ok");
                         acceptNota.setBounds(300, 425, 50, 30);
                         classLayer.add(acceptNota, new Integer(2));
-                        
-                        acceptNota.addActionListener(new ActionListener() {
 
+                        acceptNota.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent ae) {
-                                selectedClasa.addGrade((Elev)eleviList.getSelectedValue(), m, semestru, Integer.parseInt(newNota.getText()));
-                                gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                                selectedClasa.addGrade((Elev) eleviList.getSelectedValue(), m, semestru, Integer.parseInt(newNota.getText()));
+                                gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                                 classLayer.remove(newNota);
                                 classLayer.remove(acceptNota);
                                 pack();
                                 repaint();
                             }
                         });
-                        
+
                     }
                 });
-                
-                if (m.getTeza())
-                {
-                    final JTextField tezaLabel = new JTextField(selectedClasa.getTezaatMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
-                    tezaLabel.setBounds(800, 100, 50, 30);
+
+                if (m.getTeza()) {
+                    final JTextField tezaLabel = new JTextField(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
+                    tezaLabel.setBounds(800, 100, 80, 30);
                     tezaLabel.setForeground(Color.RED);
                     layer2.add(tezaLabel, new Integer(2));
-                    
-                    JButton changeTeza = new JButton("Teza");
-                    changeTeza.setBounds(800,140,50,30);
-                    layer2.add(changeTeza, new Integer(2));
-                    
-                    changeTeza.addActionListener(new ActionListener() {
 
+                    JButton changeTeza = new JButton("Teza");
+                    changeTeza.setBounds(800, 140, 80, 30);
+                    layer2.add(changeTeza, new Integer(2));
+
+                    changeTeza.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
-                            selectedClasa.setTezaatMaterie(m, ((Elev)eleviList.getSelectedValue()), semestru, tezaLabel.getText());
-                            tezaLabel.setText(selectedClasa.getTezaatMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                            selectedClasa.setTezaatMaterie(m, ((Elev) eleviList.getSelectedValue()), semestru, tezaLabel.getText());
+                            tezaLabel.setText(selectedClasa.getTezaatMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                         }
                     });
-                    
-                }
-                
-                delGrade.addActionListener(new ActionListener() {
 
+                }
+
+                delGrade.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
                         Object[] toBeDel = gradeList.getSelectedValues();
-                        for (int i = 0; i < toBeDel.length; i++)
-                        {
-                            selectedClasa.delGrade((Elev)eleviList.getSelectedValue(), m, semestru, (Integer) toBeDel[i]);
+                        for (int i = 0; i < toBeDel.length; i++) {
+                            selectedClasa.delGrade((Elev) eleviList.getSelectedValue(), m, semestru, (Integer) toBeDel[i]);
                         }
-                        gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev)eleviList.getSelectedValue(), semestru));
+                        gradeList.setListData(selectedClasa.getSituatieAtMaterie(m, (Elev) eleviList.getSelectedValue(), semestru));
                     }
                 });
+                }
                 add(layer2);
                 pack();
                 repaint();
             }
         });
-        
+
         super.add(classLayer);
         super.pack();
         super.repaint();
-        
+
     }
-    
-    private void makeProfMenu(JMenu clase, final JLayeredPane classLayer)
-    {
+
+    private void makeProfMenu(JMenu clase, final JLayeredPane classLayer) {
         JMenu clasa9 = new JMenu("Clasa a IX-a");
         JMenu clasa10 = new JMenu("Clasa a X-a");
         JMenu clasa11 = new JMenu("Clasa a XI-a");
@@ -294,32 +318,24 @@ public class HomeView extends MainView {
         clase.add(clasa11);
         clase.add(clasa12);
         
+
         ArrayList<String> classList = Centralizator.getCentralizator().getProfsClasses();
         Iterator<String> classIterator = classList.iterator();
-        while (classIterator.hasNext())
-        {
+        while (classIterator.hasNext()) {
             final String cName = classIterator.next();
             JMenu clasax;
-            if (cName.startsWith("9"))
-            {
+            if (cName.startsWith("9")) {
                 clasax = clasa9;
-            }
-            else if (cName.startsWith("10"))
-            {
+            } else if (cName.startsWith("10")) {
                 clasax = clasa10;
-            }
-            else if (cName.startsWith("11"))
-            {
+            } else if (cName.startsWith("11")) {
                 clasax = clasa11;
-            }
-            else
-            {
+            } else {
                 clasax = clasa12;
             }
             JMenuItem crr_item = new JMenuItem(cName);
             clasax.add(crr_item);
             crr_item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     setSelectedClass(Centralizator.getCentralizator().getClasa(cName));
@@ -327,15 +343,15 @@ public class HomeView extends MainView {
                 }
             });
         }
-        
+
     }
 
     private void homeForProfesor() {
         JMenuBar menuBar = new JMenuBar();
         JMenu clase = new JMenu("Clase");
+        JMenu contulMeu = new JMenu("Contul meu");
         JMenuItem logOut = new JMenuItem("Deconectare");
         logOut.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 setVisible(false);
@@ -343,15 +359,86 @@ public class HomeView extends MainView {
             }
         });
         
+        JMenuItem settings = new JMenuItem("Setari cont");
         menuBar.add(clase);
-        menuBar.add(logOut);
-        JLayeredPane classLayer = new JLayeredPane();
+        menuBar.add(contulMeu);
+        contulMeu.add(settings);
+        contulMeu.add(logOut);
+        final JLayeredPane classLayer = new JLayeredPane();
         makeProfMenu(clase, classLayer);
         
+        final JMenu userItem = new JMenu(((Profesor)user).getDisplayName());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(userItem);
+        userItem.setEnabled(false);
+        
+        settings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                //hView.removeAll();
+                classLayer.removeAll();
+                layer2.removeAll();
+                layer3.removeAll();
+                hView.remove(classLayer);
+                hView.remove(layer2);
+                hView.remove(layer3);
+                final JTextField usernameField = new JTextField (((Profesor)user).getUsername());
+                usernameField.setBounds(300, 150, 150, 30);
+                classLayer.add(usernameField, new Integer(2));
+                
+                final JTextField numeField = new JTextField (((Profesor)user).getLastName());
+                numeField.setBounds(300, 190, 150, 30);
+                classLayer.add(numeField, new Integer(2));
+                
+                final JTextField prenumeField = new JTextField(((Profesor)user).getFirstName());
+                prenumeField.setBounds(300, 230, 150, 30);
+                classLayer.add(prenumeField, new Integer(2));
+                
+                final JPasswordField passwordField = new JPasswordField(((Profesor)user).getPassword());
+                passwordField.setBounds(460, 150, 150, 30);
+                classLayer.add(passwordField, new Integer(2));
+                
+                JLabel materieLabel = new JLabel(((Profesor)user).getMaterie().toString());
+                materieLabel.setBounds(300,270, 150, 30);
+                classLayer.add(materieLabel, new Integer(2));
+                
+                JButton saveChanges = new JButton ("Salveaza modificarile");
+                saveChanges.setBounds(250, 310, 250, 30);
+                classLayer.add(saveChanges, new Integer(2));
+                
+                saveChanges.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        user.changeInfo(usernameField.getText(), numeField.getText(), prenumeField.getText(), passwordField.getText());
+                        classLayer.removeAll();
+                        hView.remove(classLayer);
+                        userItem.setText(((Profesor)user).getDisplayName());
+                        pack();
+                        repaint();
+                    }
+                });
+                
+                add(classLayer);
+                pack();
+                repaint();
+            }
+        });
+
+
         setJMenuBar(menuBar);
         pack();
         setVisible(true);
-        
+
     }
 
     private void homeforElev() {
@@ -571,10 +658,34 @@ public class HomeView extends MainView {
         JMenuBar menuBar = new JMenuBar();
         JMenu claseMenu = new JMenu("Clase");
         JMenu profesoriMenu = new JMenu("Profesori");
+        JMenu materiiMenu = new JMenu("Materii");
+        JMenu contulMeuMenu = new JMenu("Contul meu");
         JMenuItem logOutItem = new JMenuItem("Deconectare");
+        JMenuItem settings = new JMenuItem("Setari cont");
         menuBar.add(claseMenu);
         menuBar.add(profesoriMenu);
-        menuBar.add(logOutItem);
+        menuBar.add(materiiMenu);
+        menuBar.add(contulMeuMenu);
+        contulMeuMenu.add(settings);
+        contulMeuMenu.add(logOutItem);
+        final JMenu userItem = new JMenu(((Secretar)user).toString());
+        userItem.setEnabled(false);
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(new JMenuItem());
+        menuBar.add(userItem);
+
+        
+        JMenuItem addMaterie = new JMenuItem("Adauga Materie");
+        JMenuItem delMaterie = new JMenuItem("Sterge Materie");
+        materiiMenu.add(addMaterie);
+        materiiMenu.add(delMaterie);
 
         JMenuItem addProfesor = new JMenuItem("Adauga un profesor");
 //       JMenuItem delProfesor = new JMenuItem("Sterge un profesor");
@@ -596,14 +707,181 @@ public class HomeView extends MainView {
         final JMenu clasa11 = new JMenu("Clasa a XI-a");
         final JMenu clasa12 = new JMenu("Clasa a XII-a");
 
-        final JLayeredPane classEditLayer = new JLayeredPane();
         final JList eleviList = new JList();
         final JList materiiList = new JList();
 
 
-        makeEditLayer(classEditLayer, frame, eleviList, materiiList);
+        makeEditLayer(classEditLayer, frame, eleviList, new JList());
+        
+        settings.addActionListener(new ActionListener() {
 
-        final JLayeredPane profesoriLayer = new JLayeredPane();
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                //hView.removeAll();
+                if (classEditLayer.getParent() != null );
+                {
+                    frame.remove(classEditLayer);
+                    classEditLayer.removeAll();
+                }
+                if (profesoriLayer.getParent() != null)
+                {
+                    frame.remove(profesoriLayer);
+                    profesoriLayer.removeAll();
+                }
+                if (addClassLayer.getParent() != null)
+                {
+                    frame.remove(addClassLayer);
+                }
+                if (materiilayer.getParent() != null)
+                {
+                    frame.remove(materiilayer);
+                    materiilayer.removeAll();
+                }
+                final JTextField usernameField = new JTextField (user.getUsername());
+                usernameField.setBounds(300, 150, 150, 30);
+                classEditLayer.add(usernameField, new Integer(2));
+                
+                final JTextField numeField = new JTextField (user.getLastName());
+                numeField.setBounds(300, 190, 150, 30);
+                classEditLayer.add(numeField, new Integer(2));
+                
+                final JTextField prenumeField = new JTextField(user.getFirstName());
+                prenumeField.setBounds(300, 230, 150, 30);
+                classEditLayer.add(prenumeField, new Integer(2));
+                
+                final JPasswordField passwordField = new JPasswordField(user.getPassword());
+                passwordField.setBounds(460, 150, 150, 30);
+                classEditLayer.add(passwordField, new Integer(2));
+                
+                JButton saveChanges = new JButton ("Salveaza modificarile");
+                saveChanges.setBounds(250, 310, 250, 30);
+                classEditLayer.add(saveChanges, new Integer(2));
+                
+                saveChanges.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        user.changeInfo(usernameField.getText(), numeField.getText(), prenumeField.getText(), passwordField.getText());
+                        userItem.setText(((Secretar)user).toString());
+                        classEditLayer.removeAll();
+                        pack();
+                        repaint();
+                    }
+                });
+                hView.add(classEditLayer);
+                pack();
+                repaint();
+            }
+        });
+
+        addMaterie.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (classEditLayer.getParent() != null );
+                {
+                    frame.remove(classEditLayer);
+                    classEditLayer.removeAll();
+                }
+                if (profesoriLayer.getParent() != null)
+                {
+                    frame.remove(profesoriLayer);
+                    profesoriLayer.removeAll();
+                }
+                if (addClassLayer.getParent() != null)
+                {
+                    frame.remove(addClassLayer);
+                }
+                if (materiilayer.getParent() != null)
+                {
+                    frame.remove(materiilayer);
+                    materiilayer.removeAll();
+                }
+                final JList materii2List = new JList();
+                materii2List.setListData(Centralizator.getCentralizator().getMateriiNames());
+                materii2List.setBounds(350, 150, 200, 300);
+                materiilayer.add(materii2List, new Integer(2));
+                
+                final JTextField materieName = new JTextField("Nume materie");
+                materieName.setBounds(350, 470, 200, 40);
+                materiilayer.add(materieName, new Integer(2));
+
+                final JTextField nrOre = new JTextField("Nr ore/saptamana");
+                nrOre.setBounds(350, 520, 200, 40);
+                materiilayer.add(nrOre, new Integer(2));
+
+                final JCheckBox teza = new JCheckBox("Teza");
+                teza.setBounds(350, 570, 200, 40);
+                materiilayer.add(teza, new Integer(2));
+
+
+                final JButton executeAdd = new JButton("Adauga materia");
+                executeAdd.setBounds(350, 620, 200, 40);
+                materiilayer.add(executeAdd, new Integer(2));
+
+                executeAdd.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        Centralizator.getCentralizator().addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()), teza.isSelected()));
+                        materii2List.setListData(Centralizator.getCentralizator().getMateriiNames());
+                    }
+                });
+                frame.add(materiilayer);
+                pack();
+                repaint();
+            }
+        });
+        
+        delMaterie.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (classEditLayer.getParent() != null );
+                {
+                    frame.remove(classEditLayer);
+                    classEditLayer.removeAll();
+                }
+                if (profesoriLayer.getParent() != null)
+                {
+                    frame.remove(profesoriLayer);
+                    profesoriLayer.removeAll();
+                }
+                if (addClassLayer.getParent() != null)
+                {
+                    frame.remove(addClassLayer);
+                }
+                if (materiilayer.getParent() != null)
+                {
+                    frame.remove(materiilayer);
+                    materiilayer.removeAll();
+                
+                }
+                final JList materii2List = new JList();
+                materii2List.setListData(Centralizator.getCentralizator().getMateriiNames());
+                materii2List.setBounds(350, 150, 200, 300);
+                materiilayer.add(materii2List, new Integer(2));
+                
+                JButton executeDel = new JButton ("Sterge");
+                executeDel.setBounds(350, 470, 200, 30);
+                materiilayer.add(executeDel, new Integer(2));
+                
+                executeDel.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        Object[] toBeDel = materii2List.getSelectedValues();
+                        for (int i = 0 ; i < toBeDel.length; i++)
+                {
+                    Centralizator.getCentralizator().delMaterie((Materie) toBeDel[i]);
+                }
+                materii2List.setListData(Centralizator.getCentralizator().getMateriiNames());
+                    }
+                });
+                frame.add(materiilayer);
+                pack();
+                repaint();
+            }
+        });
+        
         addProfesor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -614,12 +892,22 @@ public class HomeView extends MainView {
                 if (profesoriLayer.getParent() != null) {
                     profesoriLayer.getParent().remove(profesoriLayer);
                 }
-                profesoriLayer.removeAll();
                 
+                if (addClassLayer.getParent() != null)
+                {
+                    frame.remove(addClassLayer);
+                }
+                
+                if (materiilayer.getParent() != null)
+                {
+                    frame.remove(materiilayer);
+                }
+                profesoriLayer.removeAll();
+
                 final JList profs = new JList(Centralizator.getCentralizator().getProfesori());
                 profs.setBounds(600, 200, 200, 250);
                 profesoriLayer.add(profs, new Integer(2));
-                
+
                 final JTextField username = new JTextField("nume utilizator");
                 username.setBounds(200, 200, 200, 40);
                 profesoriLayer.add(username, new Integer(2));
@@ -631,9 +919,9 @@ public class HomeView extends MainView {
                 final JTextField prenume = new JTextField("Prenume");
                 prenume.setBounds(200, 290, 200, 40);
                 profesoriLayer.add(prenume, new Integer(2));
-
-                final JTextField materie = new JTextField("Materia");
-                materie.setBounds(200, 335, 200, 40);
+                
+                final JComboBox materie = new JComboBox(Centralizator.getCentralizator().getMateriiNames());
+                materie.setBounds(200,335,200,40);
                 profesoriLayer.add(materie, new Integer(2));
 
                 JButton addProfesorButton = new JButton("Adauga profesorul");
@@ -642,7 +930,8 @@ public class HomeView extends MainView {
                 addProfesorButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
-                        Centralizator.getCentralizator().addProfesor(new Profesor(username.getText(), "1234", nume.getText(), prenume.getText(), materie.getText()));
+                        
+                        Centralizator.getCentralizator().addProfesor(new Profesor(username.getText(), "1234", nume.getText(), prenume.getText(), (Materie) materie.getSelectedItem()));
                         if (profesoriLayer.getParent() != null) {
                             frame.remove(profesoriLayer);
                         }
@@ -663,53 +952,11 @@ public class HomeView extends MainView {
                 frame.repaint();
             }
         });
-
-        /* delProfesor.addActionListener(new ActionListener() {
-
-         @Override
-         public void actionPerformed(ActionEvent ae) {
-         if (profesoriLayer.getParent() != null)
-         {
-         profesoriLayer.getParent().remove(profesoriLayer);
-         }
-         profesoriLayer.removeAll();
-                
-         if (classEditLayer.getParent() != null)
-         {
-         frame.remove(classEditLayer);
-         }
-         final JList profesoriList = new JList(Centralizator.getCentralizator().getProfesori());
-         profesoriList.setBounds(350, 200, 250, 400);
-         profesoriLayer.add(profesoriList, new Integer(2));
-                
-         JButton delProfesorButton = new JButton("Sterge profesori");
-         delProfesorButton.setBounds(350, 620, 250, 30);
-         profesoriLayer.add(delProfesorButton, new Integer(2));
-                
-         frame.add(profesoriLayer);
-         frame.pack();
-         frame.repaint();
-         delProfesorButton.addActionListener(new ActionListener() {
-
-         @Override
-         public void actionPerformed(ActionEvent ae) {
-         Object[] toBeDel = profesoriList.getSelectedValues();
-         for (int i = 0; i < toBeDel.length; i++)
-         {
-                            
-         }
-         eleviList.setListData(selectedClasa.getElevNames());
-         Centralizator.getCentralizator();
-         }
-         });
-
-         }
-         });*/
+        
 
         makeMenu(clasa9, clasa10, clasa11, clasa12, eleviList, this, classEditLayer, materiiList, profesoriLayer);
 
         JMenuItem addClasa = new JMenuItem("Adauga o clasa");
-        final JLayeredPane addClassLayer = new JLayeredPane();
         final JTextField className = new JTextField();
         className.setBounds(250, 250, 150, 30);
         addClassLayer.add(className, new Integer(2));
@@ -732,6 +979,11 @@ public class HomeView extends MainView {
             public void actionPerformed(ActionEvent ae) {
                 if (classEditLayer.getParent() != null) {
                     homeViewvar.remove(classEditLayer);
+                }
+                
+                if (materiilayer.getParent() != null)
+                {
+                    homeViewvar.remove(materiilayer);
                 }
 
                 if (profesoriLayer.getParent() != null) {
@@ -818,7 +1070,16 @@ public class HomeView extends MainView {
                         profesoriLayer.getParent().remove(profesoriLayer);
                     }
 
-
+                    if (materiilayer.getParent() != null)
+                    {
+                        frame.remove(materiilayer);
+                    }
+                    
+                    if (addClassLayer.getParent() != null)
+                    {
+                        frame.remove(addClassLayer);
+                    }
+                    
                     if (classEditLayer.getParent() != null) {
                         classEditLayer.getParent().remove(classEditLayer);
                     }
@@ -832,92 +1093,22 @@ public class HomeView extends MainView {
                     addMaterie.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent ae) {
-                            final JTextField materieName = new JTextField("Nume materie");
-                            materieName.setBounds(540, 520, 200, 40);
-                            classEditLayer.add(materieName, new Integer(2));
-
-                            final JTextField nrOre = new JTextField("Nr ore/saptamana");
-                            nrOre.setBounds(540, 570, 200, 40);
-                            classEditLayer.add(nrOre, new Integer(2));
-
-                            final JCheckBox teza = new JCheckBox("Teza");
-                            teza.setBounds(540, 620, 200, 40);
-                            classEditLayer.add(teza, new Integer(2));
-
+                            
 
                             final JButton executeAdd = new JButton("Adauga materia");
-                            executeAdd.setBounds(540, 670, 200, 40);
+                            executeAdd.setBounds(540, 565, 250, 40);
                             classEditLayer.add(executeAdd, new Integer(2));
 
                             final JComboBox profesor = new JComboBox(Centralizator.getCentralizator().getProfesori());
-                            profesor.setBounds(780, 590, 200, 40);
+                            profesor.setBounds(540, 520, 250, 40);
                             classEditLayer.add(profesor, new Integer(2));
 
                             executeAdd.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent ae) {
-                                    selectedClasa.addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()),
-                                            teza.isSelected()), (Profesor) profesor.getSelectedItem());
-                                    classEditLayer.remove(materieName);
-                                    classEditLayer.remove(nrOre);
-                                    classEditLayer.remove(teza);
-                                    classEditLayer.remove(executeAdd);
-                                    classEditLayer.remove(profesor);
-                                    frame.pack();
-                                    frame.repaint();
-                                    materiiList.setListData(selectedClasa.getMaterii());
-                                }
-                            });
-                        }
-                    });
-
-
-                    JButton editMaterie = new JButton("Modifica");
-                    editMaterie.setBounds(625, 470, 80, 40);
-                    classEditLayer.add(editMaterie, new Integer(2));
-                    editMaterie.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent ae) {
-                            Materie selectedMaterie = (Materie) materiiList.getSelectedValue();
-                            final JTextField materieName = new JTextField(selectedMaterie.toString());
-                            materieName.setBounds(540, 520, 200, 40);
-                            classEditLayer.add(materieName, new Integer(2));
-
-                            final JTextField nrOre = new JTextField(selectedMaterie.getnrOre());
-                            nrOre.setBounds(540, 570, 200, 40);
-                            classEditLayer.add(nrOre, new Integer(2));
-
-                            final JCheckBox teza = new JCheckBox("Teza");
-                            teza.setSelected(selectedMaterie.getTeza());
-                            teza.setBounds(540, 620, 200, 40);
-                            classEditLayer.add(teza, new Integer(2));
-
-
-                            final JButton executeAdd = new JButton("Modifica materia");
-                            executeAdd.setBounds(540, 670, 200, 40);
-                            classEditLayer.add(executeAdd, new Integer(2));
-                            Profesor profesori[] = Centralizator.getCentralizator().getProfesori();
-                            final JComboBox profesor = new JComboBox(profesori);
-                            Profesor selProf = selectedMaterie.getProfesor(selectedClasa);
-                            for (int i = 0; i < profesori.length; i++) {
-                                if (profesori[i].equals(selProf)) {
-                                    selProf = profesori[i];
-                                    break;
-                                }
-                            }
-                            profesor.setSelectedItem(selProf);
-                            profesor.setBounds(780, 590, 200, 40);
-                            classEditLayer.add(profesor, new Integer(2));
-
-                            executeAdd.addActionListener(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent ae) {
-                                    selectedClasa.delMaterie((Materie) materiiList.getSelectedValue());
-                                    selectedClasa.addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()),
-                                            teza.isSelected()), (Profesor) profesor.getSelectedItem());
-                                    classEditLayer.remove(materieName);
-                                    classEditLayer.remove(nrOre);
-                                    classEditLayer.remove(teza);
+                                    selectedClasa.addMaterie((Profesor) profesor.getSelectedItem());
+                               //     selectedClasa.addMaterie(new Materie(materieName.getText(), Integer.parseInt(nrOre.getText()),
+                               //             teza.isSelected()), (Profesor) profesor.getSelectedItem());
                                     classEditLayer.remove(executeAdd);
                                     classEditLayer.remove(profesor);
                                     frame.pack();

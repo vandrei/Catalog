@@ -9,9 +9,9 @@ package liceu;
  * @author andrei
  */
 public class Profesor extends Utilizator implements IProfesor, java.io.Serializable{
-    private String materie;
+    private Materie materie;
     
-    public Profesor(String userName, String password, String nume, String prenume, String materie)
+    public Profesor(String userName, String password, String nume, String prenume, Materie materie)
     {
         super(userName, password, nume, prenume);
         this.materie = materie;
@@ -20,10 +20,15 @@ public class Profesor extends Utilizator implements IProfesor, java.io.Serializa
     @Override
     public String toString()
     {
-        return super.toString() + " - " + materie;
+        return super.toString() + " - " + materie.toString();
     }
     
-    public String getMaterie()
+    public String getDisplayName()
+    {
+        return super.toString() + ", " + materie.toString();
+    }
+    
+    public Materie getMaterie()
     {
         return materie;
     }

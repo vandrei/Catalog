@@ -29,6 +29,20 @@ public abstract class Utilizator implements java.io.Serializable {
         this.prenume = prenume;
     }
     
+    public String getPassword()
+    {
+        return password;
+    }
+    
+    public void changeInfo(String username, String nume, String prenume, String passwd)
+    {
+        Centralizator.getCentralizator().changeUsername(username, this);
+        this.userName = username;
+        this.nume = nume;
+        this.prenume = prenume;
+        this.password = passwd;
+    }
+    
     public void changeInfo (String username, String nume, String prenume)
     {
         this.userName = username;

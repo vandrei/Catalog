@@ -19,4 +19,9 @@ public class Secretar extends Utilizator implements ISecretar {
         Centralizator.getCentralizator().addClasa(classID);
     }
     
+    public String toString()
+    {
+        return super.getFirstName() + " " + super.getLastName();
+    }
+    
 }

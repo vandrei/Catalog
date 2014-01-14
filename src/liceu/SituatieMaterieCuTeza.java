@@ -41,5 +41,24 @@ public class SituatieMaterieCuTeza extends SituatieMaterieBaza implements java.i
         return null;
     }
     
+    @Override
+    public int getMean(int semestru)
+    {
+        if (super.getMean(semestru) == 0)
+            return 0;
+        float mean = super.getMean(semestru);
+        switch(semestru)
+        {
+            case 1:
+                mean = mean * 3 + teza1;
+                break;
+            case 2:
+                mean = mean * 3 + teza2;
+                break;
+        }
+        mean = mean / 4;
+        return Math.round(mean);
+    }
+    
     
 }

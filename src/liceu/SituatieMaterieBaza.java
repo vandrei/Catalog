@@ -20,6 +20,8 @@ public class SituatieMaterieBaza implements java.io.Serializable {
     private ArrayList<Absenta> absente1;
     private ArrayList<Absenta> absente2;
     private float medie1, medie2;
+    private boolean showMean1 = false;
+    private boolean showMean2 = false;
     
     public SituatieMaterieBaza()
     {
@@ -55,30 +57,49 @@ public class SituatieMaterieBaza implements java.io.Serializable {
         }
     }
     
-    public float getMean(int semestru)
+    public int getMean(int semestru)
     {
         float mean = 0;
         List<Integer> note = null;
         switch (semestru)
         {
             case 1: 
+                if (showMean1 == false)
+                {
+                    return 0;
+                }
                 note = note1;
                 break;
             case 2:
+                if (showMean2 == false)
+                {
+                    return 0;
+                }
                 note = note2;
                 break;
         }
         
-        Iterator i = note.iterator();
-        int k = 0;
+        Iterator<Integer> i = note.iterator();
         while(i.hasNext())
         {
             mean += ((Integer)i.next()).intValue();
-            k++;
         }
         
-        mean = mean / k;
-        return mean;
+        mean = mean / note.size();
+        return Math.round(mean);
+    }
+    
+    public void showMean(int semestru)
+    {
+        switch(semestru)
+        {
+            case 1:
+                showMean1 = true;
+                break;
+            case 2:
+                showMean2 = true;
+                break;
+        }
     }
     
     public String getGrades(int semestru)

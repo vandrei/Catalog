@@ -12,6 +12,7 @@ public class Materie implements java.io.Serializable{
     private String name;
     private int nrOre;
     private boolean teza;
+    private String oldName;
     
     public Materie(String name, int nrOre, boolean teza)
     {
@@ -24,6 +25,11 @@ public class Materie implements java.io.Serializable{
     public String toString()
     {
         return name;
+    }
+    
+    public String oldString()
+    {
+        return oldName;
     }
     
     public String getnrOre()
@@ -39,6 +45,14 @@ public class Materie implements java.io.Serializable{
     public Profesor getProfesor(Clasa clasa)
     {
         return Centralizator.getCentralizator().getProfesor(this, clasa);
+    }
+    
+    public void setInfo(String name, int nrOre, boolean teza)
+    {
+        this.oldName = this.name;
+        this.name = name;
+        this.nrOre = nrOre;
+        this.teza = teza;
     }
     
 }

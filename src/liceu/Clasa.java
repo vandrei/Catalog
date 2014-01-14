@@ -33,6 +33,16 @@ public class Clasa implements java.io.Serializable {
         Catalog.get(e).get(m).addAbsenta(abs, semester);
     }
     
+    public int getMeanAtMaterie(Materie m, Elev elev, int semester)
+    {
+        return Catalog.get(elev).get(m).getMean(semester);
+    }
+    
+    public void closeSituatie(Materie m, Elev elev, int semester)
+    {
+        Catalog.get(elev).get(m).showMean(semester);
+    }
+    
     
     public String toString()
     {
@@ -61,37 +71,42 @@ public class Clasa implements java.io.Serializable {
         return situatie.getAbsenteForProf(sem);
     }
     
-    public void addMaterie(Materie materie, Profesor profesor)
+    public void addMaterie(Profesor profesor)
     {
+        Materie materie = profesor.getMaterie();
         materii.add(materie);
-        Centralizator.getCentralizator().addMaterie(materie, profesor, this);
-        Iterator<Elev> catalogIt = Catalog.keySet().iterator();
-        while (catalogIt.hasNext())
+        if (materie.getTeza())
         {
-            Elev e = catalogIt.next();
-            HashMap<Materie, SituatieMaterieBaza> map = (HashMap<Materie, SituatieMaterieBaza>) Catalog.get(e);
-            if (materie.getTeza())
+            Iterator<Elev> it = Catalog.keySet().iterator();
+            while (it.hasNext())
             {
-                map.put(materie, new SituatieMaterieCuTeza());
-            }
-            else
-            {
-                map.put(materie, new SituatieMaterieBaza());
+                Elev crr_elev = it.next();
+                HashMap<Materie, SituatieMaterieBaza> map = (HashMap<Materie, SituatieMaterieBaza>) Catalog.get(crr_elev);
+                SituatieMaterieCuTeza sit = new SituatieMaterieCuTeza();
+                map.put(materie, sit);
             }
         }
+        else
+        {
+            Iterator<Elev> it = Catalog.keySet().iterator();
+            while (it.hasNext())
+            {
+                Elev crr_elev = it.next();
+                HashMap<Materie, SituatieMaterieBaza> map = (HashMap<Materie, SituatieMaterieBaza>) Catalog.get(crr_elev);
+                SituatieMaterieBaza sit = new SituatieMaterieBaza();
+                map.put(materie, sit);
+            }
+        }
+        Centralizator.getCentralizator().addMaterietoClasa(this, profesor);
     }
     
     public void delMaterie(Materie materie)
     {
-        materii.remove(materie);
-        Centralizator.getCentralizator().delMaterie(materie, this);
-        Iterator<Elev> catalogIt = Catalog.keySet().iterator();
-        while (catalogIt.hasNext())
-        {
-            Elev e = catalogIt.next();
-            HashMap<Materie, ? extends SituatieMaterieBaza> map = Catalog.get(e);
-            map.remove(materie);
-        }
+    }
+    
+        public void changeMaterie(Materie materie, String materieName, int nrOre, boolean Teza, Profesor profesor)
+    {
+        materie.setInfo(materieName, nrOre, Teza);
     }
     
     public String getClassID()
