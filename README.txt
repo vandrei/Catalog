@@ -9,5 +9,3 @@ In fisierul Utilizatori.txt este lista cu utilizatorii existenti in Catalog.
 
 Secretar este Mihaela Constantinescu (mihaela.constantinescu - 1234).
 Elevul Andrei Vasilescu (andrei.vasilescu - 1234) are o situatie scolara completata. Profesorul Luminita Cretu (luminita.cretu - 1234) are acces la cele mai multe clase. Recomand rularea temei cu acesti 3 utilizatori pentru a vedea toate functionalitatile aplicatiei.
-
-
